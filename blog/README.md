@@ -5,7 +5,8 @@ to create and read an article with his name, using method annotations.
 
 
 Test app:
-- users with basic auth, statically defined, each user has its own articles feed
+- users with basic auth, defined in mysql/mongodb, each user has its own articles feed
 - articles with comments sorted by date
 - BDD tests with Spock
-- DDD approach as a second
+- Mongo as datasource
+- DDD approach as a second implementation
