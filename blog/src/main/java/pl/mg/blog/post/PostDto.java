@@ -11,7 +11,11 @@ public class PostDto {
 
     private String author;
 
+    private String title;
+
     private String content;
 
     private Instant created;
+
+    private Long likes;
 }

@@ -1,27 +1,55 @@
 package pl.mg.blog.comment;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/comment")
+@Slf4j
 public class CommentController {
 
-    @GetMapping(value = "/{postId}")
+    //post comment
+    @PostMapping(value = "")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CommentDto> addComment(@RequestBody AddComment command) {
+        //TODO
+        return ResponseEntity.ok(null);
+    }
+
+    //like comment
+    @PostMapping(value = "")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<CommentDto>> likeComment(@RequestBody AddComment command) {
+        //TODO
+        return ResponseEntity.ok(null);
+    }
+
+    //get by id
+    @GetMapping(value = "/{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CommentDto> getComment(@PathVariable long commentId) {
+        //TODO
+        return ResponseEntity.ok(null);
+    }
+
+    //get all user comments
+    @GetMapping(value = "/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<CommentDto>> getUserComments(@PathVariable long userId) {
+        //TODO
+        return ResponseEntity.ok(null);
+    }
+
+    //get all for post
+    @GetMapping(value = "/post/{postId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CommentDto>> getPostComments(@PathVariable long postId) {
-        List<CommentDto> comments = new ArrayList<>();
-        comments.add(new CommentDto(1, "c1", "a1", 1, Instant.now(), 34));
-        comments.add(new CommentDto(2, "c2", "a2", 1, Instant.now(), 0));
-        return ResponseEntity.ok(comments);
+        //TODO
+        return ResponseEntity.ok(null);
     }
 }

@@ -9,4 +9,5 @@ Test app:
 - articles with comments sorted by date
 - BDD tests with Spock
 - Mongo as datasource
+- CQRS
 - DDD approach as a second implementation

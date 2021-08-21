@@ -1,24 +1,20 @@
 package pl.mg.blog.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
-@Data
-@AllArgsConstructor
-public class CommentDto {
+@Document
+public class Comment {
 
-    @NotNull
+    @Id
     private long id;
 
     private String content;
 
-    @NotNull
     private String author;
 
-    @NotNull
     private long postId;
 
     private Instant created;
