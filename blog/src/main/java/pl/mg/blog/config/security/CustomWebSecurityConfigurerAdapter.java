@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import pl.mg.blog.post.EditPost;
+import pl.mg.blog.user.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -24,8 +26,12 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("user1").password(passwordEncoder().encode("user1Pass"))
-                .authorities("ROLE_USER");
+                .withUser(UserRepository.USERS.get("user1").getUsername()).password(passwordEncoder().encode(UserRepository.USERS.get("user1").getPassword()))
+                .authorities("ROLE_USER")
+                .and()
+                .withUser(UserRepository.USERS.get("user2").getUsername()).password(passwordEncoder().encode(UserRepository.USERS.get("user2").getPassword()))
+                .authorities("ROLE_USER")
+        ;
     }
 
     @Override
