@@ -11,7 +11,7 @@ import java.time.Instant;
 public class QueryCommentDto {
 
     @NotNull
-    private long id;
+    private String id;
 
     private String content;
 

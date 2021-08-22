@@ -5,17 +5,15 @@ import pl.mg.blog.commons.Command;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
 @Value
 public class EditPostCommand implements Command {
 
-    @NotEmpty UUID id;
+    @NotNull String id;
 
     @NotEmpty String username;
 
-    @NotNull String content;
+    @NotEmpty String title;
 
-    @NotNull String title;
-
+    @NotEmpty String content;
 }
