@@ -3,7 +3,13 @@ package pl.mg.blog.post;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface PostRepository extends MongoRepository<Post, Long> {
+import java.util.List;
+import java.util.Optional;
 
+@Repository
+public interface PostRepository extends MongoRepository<Post, String> {
+
+    List<Post> findAllByAuthor(String username);
+
+    Optional<Post> findFirstByCommentIdsContains(String commentId);
 }

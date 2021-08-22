@@ -4,12 +4,12 @@ import lombok.Value;
 import pl.mg.blog.commons.Command;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.UUID;
+import javax.validation.constraints.NotNull;
 
 @Value
 public class EditPostDto implements Command {
 
-    @NotEmpty UUID id;
+    @NotNull String id;
 
     @NotEmpty String content;
 
