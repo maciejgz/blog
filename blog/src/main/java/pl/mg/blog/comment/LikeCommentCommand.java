@@ -6,11 +6,9 @@ import pl.mg.blog.commons.Command;
 import javax.validation.constraints.NotNull;
 
 @Value
-public class AddComment implements Command {
+public class LikeCommentCommand implements Command {
 
     @NotNull
-    Long postId;
+    Long commentId;
 
-    @NotNull
-    String content;
 }

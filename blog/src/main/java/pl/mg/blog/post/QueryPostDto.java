@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class PostDto {
+public class QueryPostDto {
 
     private long id;
 

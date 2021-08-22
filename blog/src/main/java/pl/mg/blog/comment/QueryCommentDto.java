@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @Data
 @AllArgsConstructor
-public class CommentDto {
+public class QueryCommentDto {
 
     @NotNull
     private long id;

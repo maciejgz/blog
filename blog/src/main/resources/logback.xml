@@ -24,7 +24,7 @@
         <appender-ref ref="Console"/>
     </logger>
 
-    <logger name="org.springframework.orm.jpa" level="debug" additivity="false">
+    <logger name="org.springframework" level="debug" additivity="false">
         <appender-ref ref="Console"/>
     </logger>
 
