@@ -1,6 +1,8 @@
 package pl.mg.blog.post;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -24,6 +26,7 @@ public class PostCommandService {
         postRepository.save(post);
     }
 
+    @PreAuthorize("@postAccessService.hasPermission('special')")
     public void editPost(@Valid EditPostCommand command) throws PostNotFoundException {
         Optional<Post> post = postRepository.findById(command.getId());
         if (post.isPresent()) {
