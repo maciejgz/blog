@@ -26,7 +26,7 @@ public class PostCommandService {
         postRepository.save(post);
     }
 
-    @PreAuthorize("@postAccessService.hasPermission('special')")
+    @PreAuthorize("@postAccessService.hasPermission(#command.username, #command.id)")
     public void editPost(@Valid EditPostCommand command) throws PostNotFoundException {
         Optional<Post> post = postRepository.findById(command.getId());
         if (post.isPresent()) {
