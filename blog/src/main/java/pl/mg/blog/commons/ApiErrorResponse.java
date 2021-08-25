@@ -7,7 +7,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ErrorResponse {
+public class ApiErrorResponse {
+
     private String message;
 
     private List<String> details;
