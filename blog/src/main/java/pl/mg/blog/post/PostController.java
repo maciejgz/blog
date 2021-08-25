@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pl.mg.blog.commons.ErrorResponse;
+import pl.mg.blog.commons.ApiErrorResponse;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -79,10 +79,10 @@ public class PostController {
     }
 
     @ExceptionHandler(value = {PostNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handlePostNotFound(Exception ex) {
+    public ResponseEntity<ApiErrorResponse> handlePostNotFound(Exception ex) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Post not found", details);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse("Post not found", details);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
 }
