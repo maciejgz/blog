@@ -1,17 +1,17 @@
 package pl.mg.blog.comment;
 
-import lombok.Value;
+import lombok.Data;
 import pl.mg.blog.commons.Command;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Value
+@Data
 public class AddCommentCommand implements Command {
 
     @NotBlank String username;
 
-    @NotNull Long postId;
+    @NotNull String postId;
 
     @NotBlank String content;
 }
