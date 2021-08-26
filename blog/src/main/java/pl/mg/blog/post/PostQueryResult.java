@@ -2,13 +2,14 @@ package pl.mg.blog.post;
 
 import lombok.Builder;
 import lombok.Data;
+import pl.mg.blog.commons.Query;
 
 import java.time.Instant;
 import java.util.List;
 
 @Data
 @Builder
-public class QueryPostDto {
+public class PostQueryResult implements Query {
 
     private String id;
 
@@ -24,8 +25,8 @@ public class QueryPostDto {
 
     private List<String> comments;
 
-    static QueryPostDto ofPost(Post post) {
-        return QueryPostDto.builder()
+    static PostQueryResult ofPost(Post post) {
+        return PostQueryResult.builder()
                 .id(post.getId())
                 .author(post.getAuthor())
                 .title(post.getTitle())

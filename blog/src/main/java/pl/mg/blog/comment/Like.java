@@ -8,21 +8,12 @@ import java.time.Instant;
 
 @Data
 @AllArgsConstructor
-public class QueryCommentDto {
+public class Like {
 
     @NotNull
-    private String id;
-
-    private String content;
+    private String username;
 
     @NotNull
-    private String author;
-
-    @NotNull
-    private long postId;
-
-    private Instant created;
-
-    private long likes;
+    private Instant date;
 
 }

@@ -19,18 +19,18 @@ public class PostQueryService {
         this.repository = repository;
     }
 
-    public Optional<QueryPostDto> findByID(@Valid @NotEmpty String id) {
+    public Optional<PostQueryResult> findByID(@Valid @NotEmpty String id) {
         Optional<Post> post = this.repository.findById(id);
-        return post.map(QueryPostDto::ofPost);
+        return post.map(PostQueryResult::ofPost);
     }
 
-    public List<QueryPostDto> findByUsername(@Valid @NotEmpty String userId) {
+    public List<PostQueryResult> findByUsername(@Valid @NotEmpty String userId) {
         List<Post> allByAuthor = repository.findAllByAuthor(userId);
-        return allByAuthor.stream().map(QueryPostDto::ofPost).collect(Collectors.toList());
+        return allByAuthor.stream().map(PostQueryResult::ofPost).collect(Collectors.toList());
     }
 
-    public Optional<QueryPostDto> findByCommentId(@Valid @NotEmpty String commentId) {
+    public Optional<PostQueryResult> findByCommentId(@Valid @NotEmpty String commentId) {
         Optional<Post> byComment = repository.findFirstByCommentIdsContains(commentId);
-       return byComment.map(QueryPostDto::ofPost);
+       return byComment.map(PostQueryResult::ofPost);
     }
 }
