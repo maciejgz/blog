@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AddCommentCommand implements Command {
 
-    @NotBlank String username;
+    String username;
 
     @NotNull String postId;
 

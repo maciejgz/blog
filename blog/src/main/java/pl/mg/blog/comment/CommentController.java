@@ -5,14 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
+import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
+import pl.mg.blog.comment.exception.CommentNotExistException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/comment")
 @Slf4j
+@Validated
 public class CommentController {
 
     private final CommentService commentService;
@@ -24,7 +31,8 @@ public class CommentController {
     //post comment
     @PostMapping(value = "")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CommentQueryResult> addComment(@RequestBody @Valid AddCommentCommand command, Authentication authentication) {
+    public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command,
+                                                         Authentication authentication) {
         command.setUsername(authentication.getName());
         CommentQueryResult commentQueryResult = commentService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
@@ -33,48 +41,52 @@ public class CommentController {
     //like comment
     @PostMapping(value = "/like")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> likeComment(@RequestBody LikeCommentCommand command) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<LikeCommentResponse> likeComment(@Valid @RequestBody LikeCommentCommand command,
+                                                           Authentication authentication) throws CommentNotExistException, CommentAlreadyLikedException {
+        command.setUsername(authentication.getName());
+        LikeCommentResponse likeCommentResponse = commentService.likeComment(command);
+        return ResponseEntity.ok(likeCommentResponse);
     }
 
     //dislike comment
     @PostMapping(value = "/dislike")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> dislikeComment(@RequestBody DislikeCommentCommand command) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<DislikeCommentResponse> dislikeComment(@Valid @RequestBody DislikeCommentCommand command, Authentication authentication)
+            throws CommentNotExistException, CommentAlreadyDislikedException {
+        command.setUsername(authentication.getName());
+        DislikeCommentResponse dislikeCommentResponse = commentService.dislikeComment(command);
+        return ResponseEntity.ok(dislikeCommentResponse);
     }
 
     //get by id
     @GetMapping(value = "/{commentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CommentQueryResult> getComment(@PathVariable long commentId) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<CommentQueryResult> getComment(@PathVariable @Valid @NotNull String commentId) throws CommentNotExistException {
+        CommentQueryResult comment = commentService.getComment(commentId);
+        return ResponseEntity.ok(comment);
     }
 
     //get all user comments
-    @GetMapping(value = "/user/{userId}")
+    @GetMapping(value = "/user/{username}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getUserComments(@PathVariable long userId) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<CommentQueryResult>> getUserComments(@PathVariable @Valid @NotEmpty String username) {
+        List<CommentQueryResult> userComments = commentService.getUserComments(username);
+        return ResponseEntity.ok(userComments);
     }
 
     //get all comments for post
     @GetMapping(value = "/post/{postId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getPostComments(@PathVariable long postId) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<CommentQueryResult>> getPostComments(@PathVariable @Valid @NotEmpty String postId) {
+        List<CommentQueryResult> postComments = commentService.getPostComments(postId);
+        return ResponseEntity.ok(postComments);
     }
 
     //get all comments for post
     @GetMapping(value = "/like/user/{userId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable long userId) {
-        //TODO
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable @Valid @NotEmpty String userId) {
+        List<CommentQueryResult> commentsLikedByUser = commentService.getCommentsLikedByUser(userId);
+        return ResponseEntity.ok(commentsLikedByUser);
     }
 }

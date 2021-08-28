@@ -19,4 +19,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUser() {
         return ResponseEntity.ok(new UserDto("user1", "pass1"));
     }
+    
+    //TODO implement registration endpoint
+
 }

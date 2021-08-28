@@ -1,18 +1,16 @@
 package pl.mg.blog.comment;
 
-import lombok.Value;
+import lombok.Data;
 import pl.mg.blog.commons.Command;
 
-import javax.validation.constraints.NotNull;
-import java.util.UUID;
+import javax.validation.constraints.NotEmpty;
 
-@Value
+@Data
 public class LikeCommentCommand implements Command {
 
-    @NotNull
+    @NotEmpty
     String commentId;
 
-    @NotNull
     String username;
 
 }
