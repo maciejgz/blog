@@ -2,12 +2,10 @@ package pl.mg.blog.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
 import pl.mg.blog.commons.Query;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
