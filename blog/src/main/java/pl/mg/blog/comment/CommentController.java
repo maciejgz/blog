@@ -1,20 +1,25 @@
 package pl.mg.blog.comment;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
 import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
 
+import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/comment")
@@ -32,7 +37,7 @@ public class CommentController {
     @PostMapping(value = "")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command,
-                                                         Authentication authentication) {
+            Authentication authentication) {
         command.setUsername(authentication.getName());
         CommentQueryResult commentQueryResult = commentService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
@@ -42,7 +47,7 @@ public class CommentController {
     @PostMapping(value = "/like")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<LikeCommentResponse> likeComment(@Valid @RequestBody LikeCommentCommand command,
-                                                           Authentication authentication) throws CommentNotExistException, CommentAlreadyLikedException {
+            Authentication authentication) throws CommentNotExistException, CommentAlreadyLikedException {
         command.setUsername(authentication.getName());
         LikeCommentResponse likeCommentResponse = commentService.likeComment(command);
         return ResponseEntity.ok(likeCommentResponse);
@@ -51,7 +56,8 @@ public class CommentController {
     //dislike comment
     @PostMapping(value = "/dislike")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<DislikeCommentResponse> dislikeComment(@Valid @RequestBody DislikeCommentCommand command, Authentication authentication)
+    public ResponseEntity<DislikeCommentResponse> dislikeComment(@Valid @RequestBody DislikeCommentCommand command,
+            Authentication authentication)
             throws CommentNotExistException, CommentAlreadyDislikedException {
         command.setUsername(authentication.getName());
         DislikeCommentResponse dislikeCommentResponse = commentService.dislikeComment(command);
@@ -61,7 +67,8 @@ public class CommentController {
     //get by id
     @GetMapping(value = "/{commentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CommentQueryResult> getComment(@PathVariable @Valid @NotNull String commentId) throws CommentNotExistException {
+    public ResponseEntity<CommentQueryResult> getComment(@PathVariable @Valid @NotNull String commentId)
+            throws CommentNotExistException {
         CommentQueryResult comment = commentService.getComment(commentId);
         return ResponseEntity.ok(comment);
     }
@@ -88,5 +95,17 @@ public class CommentController {
     public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable @Valid @NotEmpty String userId) {
         List<CommentQueryResult> commentsLikedByUser = commentService.getCommentsLikedByUser(userId);
         return ResponseEntity.ok(commentsLikedByUser);
+    }
+
+    //getRandomComment
+    @GetMapping(value = "")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CommentQueryResult> getRandomComment() throws CommentNotExistException {
+        Optional<CommentQueryResult> comment = commentService.getRandomPost();
+        if (comment.isPresent()) {
+            return ResponseEntity.ok(comment.get());
+        } else {
+            throw new CommentNotExistException("No comment found");
+        }
     }
 }

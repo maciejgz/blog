@@ -19,6 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class PostController {
 
+    protected static final String POST_NOT_FOUND_MESSAGE = "Post not found";
     private final PostCommandService postCommandService;
     private final PostQueryService postQueryService;
 
@@ -33,48 +34,66 @@ public class PostController {
     public ResponseEntity createPost(@RequestBody @Valid CreatePostResponse dto, Authentication authentication) {
         log.debug("create post");
         //TODO add object factory in the aggregate
-        postCommandService.createPost(new CreatePostCommand(authentication.getName(), dto.getTitle(), dto.getContent()));
+        postCommandService.createPost(
+                new CreatePostCommand(authentication.getName(), dto.getTitle(), dto.getContent()));
         return ResponseEntity.ok().build();
     }
 
     //edit post
     @PutMapping(value = "")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity editPost(@RequestBody @Valid EditPostResponse dto, Authentication authentication) throws PostNotFoundException {
+    public ResponseEntity editPost(@RequestBody @Valid EditPostResponse dto, Authentication authentication)
+            throws PostNotFoundException {
         log.debug("editPost");
-        postCommandService.editPost(new EditPostCommand(dto.getId(), authentication.getName(), dto.getTitle(), dto.getContent()));
+        postCommandService.editPost(
+                new EditPostCommand(dto.getId(), authentication.getName(), dto.getTitle(), dto.getContent()));
         return ResponseEntity.ok().build();
     }
 
     //getForPostId
     @GetMapping(value = "/{postId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PostQueryResult> getPost(@PathVariable(name = "postId") @NotEmpty @Valid String postId) throws PostNotFoundException {
+    public ResponseEntity<PostQueryResult> getPost(@PathVariable(name = "postId") @NotEmpty @Valid String postId)
+            throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.findByID(postId);
         if (post.isPresent()) {
             return ResponseEntity.ok(post.get());
         } else {
-            throw new PostNotFoundException("Post not found");
+            throw new PostNotFoundException(POST_NOT_FOUND_MESSAGE);
+        }
+    }
+
+    //getRandomPost
+    @GetMapping(value = "")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PostQueryResult> getPost() throws PostNotFoundException {
+        Optional<PostQueryResult> post = postQueryService.getRandomPost();
+        if (post.isPresent()) {
+            return ResponseEntity.ok(post.get());
+        } else {
+            throw new PostNotFoundException("Any post not found");
         }
     }
 
     //getPostsForUserId
     @GetMapping(value = "/user/{userId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<PostQueryResult>> getUserPosts(@PathVariable(name = "userId") @Valid @NotEmpty String userId) {
+    public ResponseEntity<List<PostQueryResult>> getUserPosts(
+            @PathVariable(name = "userId") @Valid @NotEmpty String userId) {
         return ResponseEntity.ok(postQueryService.findByUsername(userId));
     }
 
     //getForCommentId
     @GetMapping(value = "/comment/{commentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PostQueryResult> getPostByCommentId(@PathVariable(name = "commentId") @Valid @NotEmpty String commentId)
+    public ResponseEntity<PostQueryResult> getPostByCommentId(
+            @PathVariable(name = "commentId") @Valid @NotEmpty String commentId)
             throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.findByCommentId(commentId);
         if (post.isPresent()) {
             return ResponseEntity.ok(post.get());
         } else {
-            throw new PostNotFoundException("Post not found");
+            throw new PostNotFoundException(POST_NOT_FOUND_MESSAGE);
         }
     }
 
@@ -82,7 +101,7 @@ public class PostController {
     public ResponseEntity<ApiErrorResponse> handlePostNotFound(Exception ex) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse("Post not found", details);
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(POST_NOT_FOUND_MESSAGE, details);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
 }

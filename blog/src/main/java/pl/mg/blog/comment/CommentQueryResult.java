@@ -2,6 +2,7 @@ package pl.mg.blog.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.mg.blog.commons.Query;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommentQueryResult implements Query {
 
     @NotNull

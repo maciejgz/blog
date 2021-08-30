@@ -1,7 +1,9 @@
 package pl.mg.blog.post;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.mg.blog.commons.Query;
 
 import java.time.Instant;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostQueryResult implements Query {
 
     private String id;

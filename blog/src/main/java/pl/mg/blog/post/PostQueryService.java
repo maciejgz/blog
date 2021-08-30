@@ -31,6 +31,10 @@ public class PostQueryService {
 
     public Optional<PostQueryResult> findByCommentId(@Valid @NotEmpty String commentId) {
         Optional<Post> byComment = repository.findFirstByCommentIdsContains(commentId);
-       return byComment.map(PostQueryResult::ofPost);
+        return byComment.map(PostQueryResult::ofPost);
+    }
+
+    public Optional<PostQueryResult> getRandomPost() {
+        return repository.getRandomPost().map(PostQueryResult::ofPost);
     }
 }

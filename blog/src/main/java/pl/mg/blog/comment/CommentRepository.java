@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Set;
 
 @Repository
-public interface CommentRepository extends MongoRepository<Comment, String> {
+public interface CommentRepository extends MongoRepository<Comment, String>, CommentCustomRepository {
 
     Set<Comment> findAllByAuthor(String author);
 

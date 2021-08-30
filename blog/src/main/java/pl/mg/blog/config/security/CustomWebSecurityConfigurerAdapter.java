@@ -8,10 +8,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import pl.mg.blog.user.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -25,14 +24,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser(UserRepository.USERS.get("user1").getUsername()).password(passwordEncoder().encode(UserRepository.USERS.get("user1").getPassword()))
-                .authorities("ROLE_USER")
-                .and()
-                .withUser(UserRepository.USERS.get("user2").getUsername()).password(passwordEncoder().encode(UserRepository.USERS.get("user2").getPassword()))
-                .authorities("ROLE_USER")
-        ;
+    public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsService userDetailsService) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -51,7 +44,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BasicPasswordEncoder();
     }
 
 }
