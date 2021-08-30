@@ -123,6 +123,11 @@ public class CommentServiceImpl implements CommentService {
         return allByLikedComment.stream().map(CommentQueryResult::new).collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<CommentQueryResult> getRandomPost() {
+        return commentRepository.getRandomComment().map(CommentQueryResult::new);
+    }
+
     private boolean commentAlreadyLiked(String username, Set<Like> likes) {
         return likes.stream().anyMatch(like -> username.equalsIgnoreCase(like.getUsername()));
     }

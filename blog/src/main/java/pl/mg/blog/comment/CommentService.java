@@ -5,21 +5,25 @@ import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentService {
 
-    public CommentQueryResult addComment(AddCommentCommand command);
+    CommentQueryResult addComment(AddCommentCommand command);
 
-    public LikeCommentResponse likeComment(LikeCommentCommand command) throws CommentNotExistException, CommentAlreadyLikedException;
+    LikeCommentResponse likeComment(LikeCommentCommand command)
+            throws CommentNotExistException, CommentAlreadyLikedException;
 
-    public DislikeCommentResponse dislikeComment(DislikeCommentCommand command) throws CommentNotExistException, CommentAlreadyDislikedException;
+    DislikeCommentResponse dislikeComment(DislikeCommentCommand command)
+            throws CommentNotExistException, CommentAlreadyDislikedException;
 
-    public CommentQueryResult getComment(String commentId) throws CommentNotExistException;
+    CommentQueryResult getComment(String commentId) throws CommentNotExistException;
 
-    public List<CommentQueryResult> getUserComments(String username);
+    List<CommentQueryResult> getUserComments(String username);
 
-    public List<CommentQueryResult> getPostComments(String commentId);
+    List<CommentQueryResult> getPostComments(String commentId);
 
-    public List<CommentQueryResult> getCommentsLikedByUser(String username);
+    List<CommentQueryResult> getCommentsLikedByUser(String username);
 
+    Optional<CommentQueryResult> getRandomPost();
 }

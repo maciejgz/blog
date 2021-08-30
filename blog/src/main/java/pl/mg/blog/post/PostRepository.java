@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostRepository extends MongoRepository<Post, String> {
+public interface PostRepository extends MongoRepository<Post, String>, PostCustomRepository {
 
     List<Post> findAllByAuthor(String username);
 
     Optional<Post> findFirstByCommentIdsContains(String commentId);
 
     Optional<Post> findByAuthorAndId(String author, String id);
+
+    Optional<Post> getRandomPost();
 }
