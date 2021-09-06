@@ -1,6 +1,11 @@
-package pl.mg.blog.comment;
+package pl.mg.blog.comment.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -10,7 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.mg.blog.comment.AddCommentCommand;
+import pl.mg.blog.comment.CommentQueryResult;
+import pl.mg.blog.comment.CommentService;
+import pl.mg.blog.comment.DislikeCommentCommand;
+import pl.mg.blog.comment.DislikeCommentResponse;
+import pl.mg.blog.comment.LikeCommentCommand;
+import pl.mg.blog.comment.LikeCommentResponse;
 import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
 import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
@@ -18,6 +31,7 @@ import pl.mg.blog.comment.exception.CommentNotExistException;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +41,9 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class CommentController {
 
+    private static final Integer DEFAULT_PAGE = 0;
+    private static final Integer DEFAULT_SIZE = 100;
+    private static final Integer DEFAULT_SORT = 100;
     private final CommentService commentService;
 
     public CommentController(CommentService commentService) {
@@ -64,7 +81,7 @@ public class CommentController {
         return ResponseEntity.ok(dislikeCommentResponse);
     }
 
-    //get by id
+    //get by comment id
     @GetMapping(value = "/{commentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryResult> getComment(@PathVariable @Valid @NotNull String commentId)
@@ -76,7 +93,13 @@ public class CommentController {
     //get all user comments
     @GetMapping(value = "/user/{username}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getUserComments(@PathVariable @Valid @NotEmpty String username) {
+    public ResponseEntity<List<CommentQueryResult>> getUserComments(@PathVariable @Valid @NotEmpty String username,
+            @RequestParam(name = "page", required = false) @Valid @Min(0) int page,
+            @RequestParam(name = "pageSize", required = false) @Valid @Min(0) int pageSize,
+            @RequestParam(name = "sortBy", required = false) @Valid @CommentSort String sortBy,
+            @RequestParam(name = "sortOrder", required = false) String sort
+    ) {
+
         List<CommentQueryResult> userComments = commentService.getUserComments(username);
         return ResponseEntity.ok(userComments);
     }
@@ -89,7 +112,7 @@ public class CommentController {
         return ResponseEntity.ok(postComments);
     }
 
-    //get all comments for post
+    //get all user's likes
     @GetMapping(value = "/like/user/{userId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable @Valid @NotEmpty String userId) {
