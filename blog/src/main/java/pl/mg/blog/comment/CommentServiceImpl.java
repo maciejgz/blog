@@ -1,11 +1,14 @@
 package pl.mg.blog.comment;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
 import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
+import pl.mg.blog.commons.QueryResultPage;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -97,12 +100,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentQueryResult> getUserComments(String username) {
+    public CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command) {
         //TODO business validation
         //TODO verify user existence in user microservice
-        //TODO add search criteria
-        Set<Comment> allByAuthor = commentRepository.findAllByAuthor(username);
-        return allByAuthor.stream().map(CommentQueryResult::new).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(), command.getPageableCommand().getPageSize());
+        pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
+        Page<Comment> queryResult = commentRepository.findAllByAuthor(command.getUsername(), pageRequest);
+        QueryResultPage pageInfo = new QueryResultPage(queryResult.getNumber(), queryResult.getSize(), queryResult.getTotalPages(),
+                queryResult.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
+        List<CommentQueryResult> result = queryResult.get().map(CommentQueryResult::new).collect(Collectors.toList());
+        return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();
     }
 
     @Override

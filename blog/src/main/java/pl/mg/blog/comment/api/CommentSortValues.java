@@ -4,6 +4,10 @@ public enum CommentSortValues {
 
     CREATED("created");
 
+    public String getColumn() {
+        return column;
+    }
+
     private final String column;
 
     CommentSortValues(String column) {

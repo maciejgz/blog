@@ -19,7 +19,7 @@ public interface CommentService {
 
     CommentQueryResult getComment(String commentId) throws CommentNotExistException;
 
-    List<CommentQueryResult> getUserComments(String username);
+    CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command);
 
     List<CommentQueryResult> getPostComments(String commentId);
 

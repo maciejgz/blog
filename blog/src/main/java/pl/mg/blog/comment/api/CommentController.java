@@ -1,11 +1,7 @@
 package pl.mg.blog.comment.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -17,16 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.mg.blog.comment.AddCommentCommand;
-import pl.mg.blog.comment.CommentQueryResult;
-import pl.mg.blog.comment.CommentService;
-import pl.mg.blog.comment.DislikeCommentCommand;
-import pl.mg.blog.comment.DislikeCommentResponse;
-import pl.mg.blog.comment.LikeCommentCommand;
-import pl.mg.blog.comment.LikeCommentResponse;
+import pl.mg.blog.comment.*;
 import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
 import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
+import pl.mg.blog.commons.QueryPageableCommand;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,9 +32,6 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class CommentController {
 
-    private static final Integer DEFAULT_PAGE = 0;
-    private static final Integer DEFAULT_SIZE = 100;
-    private static final Integer DEFAULT_SORT = 100;
     private final CommentService commentService;
 
     public CommentController(CommentService commentService) {
@@ -54,7 +42,7 @@ public class CommentController {
     @PostMapping(value = "")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command,
-            Authentication authentication) {
+                                                         Authentication authentication) {
         command.setUsername(authentication.getName());
         CommentQueryResult commentQueryResult = commentService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
@@ -64,7 +52,7 @@ public class CommentController {
     @PostMapping(value = "/like")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<LikeCommentResponse> likeComment(@Valid @RequestBody LikeCommentCommand command,
-            Authentication authentication) throws CommentNotExistException, CommentAlreadyLikedException {
+                                                           Authentication authentication) throws CommentNotExistException, CommentAlreadyLikedException {
         command.setUsername(authentication.getName());
         LikeCommentResponse likeCommentResponse = commentService.likeComment(command);
         return ResponseEntity.ok(likeCommentResponse);
@@ -74,7 +62,7 @@ public class CommentController {
     @PostMapping(value = "/dislike")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<DislikeCommentResponse> dislikeComment(@Valid @RequestBody DislikeCommentCommand command,
-            Authentication authentication)
+                                                                 Authentication authentication)
             throws CommentNotExistException, CommentAlreadyDislikedException {
         command.setUsername(authentication.getName());
         DislikeCommentResponse dislikeCommentResponse = commentService.dislikeComment(command);
@@ -93,21 +81,29 @@ public class CommentController {
     //get all user comments
     @GetMapping(value = "/user/{username}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getUserComments(@PathVariable @Valid @NotEmpty String username,
-            @RequestParam(name = "page", required = false) @Valid @Min(0) int page,
-            @RequestParam(name = "pageSize", required = false) @Valid @Min(0) int pageSize,
-            @RequestParam(name = "sortBy", required = false) @Valid @CommentSort String sortBy,
-            @RequestParam(name = "sortOrder", required = false) String sort
+    public ResponseEntity<CommentQueryPageResult> getUserComments(@PathVariable @Valid @NotEmpty String username,
+                                                                  @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
+                                                                  @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
+                                                                  @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
+                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
     ) {
-
-        List<CommentQueryResult> userComments = commentService.getUserComments(username);
+        GetCommentsByUserIdCommand command = new GetCommentsByUserIdCommand();
+        command.setUsername(username);
+        QueryPageableCommand queryPageableCommand = new QueryPageableCommand(page, pageSize, sortBy, Sort.Direction.fromString(sortOrder));
+        command.setPageableCommand(queryPageableCommand);
+        CommentQueryPageResult userComments = commentService.getUserComments(command);
         return ResponseEntity.ok(userComments);
     }
 
     //get all comments for post
     @GetMapping(value = "/post/{postId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getPostComments(@PathVariable @Valid @NotEmpty String postId) {
+    public ResponseEntity<List<CommentQueryResult>> getPostComments(@PathVariable @Valid @NotEmpty String postId,
+                                                                    @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
+                                                                    @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
+                                                                    @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
+                                                                    @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) {
+        //TODO refactor to command with paging
         List<CommentQueryResult> postComments = commentService.getPostComments(postId);
         return ResponseEntity.ok(postComments);
     }
