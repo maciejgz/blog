@@ -104,21 +104,25 @@ public class CommentServiceImpl implements CommentService {
         //TODO business validation
         //TODO verify user existence in user microservice
         PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(), command.getPageableCommand().getPageSize());
-        pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
-        Page<Comment> queryResult = commentRepository.findAllByAuthor(command.getUsername(), pageRequest);
-        QueryResultPage pageInfo = new QueryResultPage(queryResult.getNumber(), queryResult.getSize(), queryResult.getTotalPages(),
-                queryResult.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
-        List<CommentQueryResult> result = queryResult.get().map(CommentQueryResult::new).collect(Collectors.toList());
+        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
+        Page<Comment> res = commentRepository.findAllByAuthor(command.getUsername(), pageRequest);
+        QueryResultPage pageInfo = new QueryResultPage(res.getNumber(), res.getSize(), res.getTotalPages(),
+                res.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
+        List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
         return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();
     }
 
     @Override
-    public List<CommentQueryResult> getPostComments(String postId) {
+    public CommentQueryPageResult getPostComments(GetCommentsByPostIdCommand command) {
         //TODO business validation
         //TODO verify post existence in post microservice
-        //TODO add search criteria
-        Set<Comment> allByPost = commentRepository.findAllByPostId(postId);
-        return allByPost.stream().map(CommentQueryResult::new).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(), command.getPageableCommand().getPageSize());
+        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
+        Page<Comment> res = commentRepository.findAllByPostId(command.getPostId(), pageRequest);
+        QueryResultPage pageInfo = new QueryResultPage(res.getNumber(), res.getSize(), res.getTotalPages(),
+                res.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
+        List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
+        return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();
     }
 
     @Override

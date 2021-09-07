@@ -98,13 +98,16 @@ public class CommentController {
     //get all comments for post
     @GetMapping(value = "/post/{postId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getPostComments(@PathVariable @Valid @NotEmpty String postId,
+    public ResponseEntity<CommentQueryPageResult> getPostComments(@PathVariable @Valid @NotEmpty String postId,
                                                                     @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
                                                                     @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
                                                                     @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
                                                                     @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) {
-        //TODO refactor to command with paging
-        List<CommentQueryResult> postComments = commentService.getPostComments(postId);
+        GetCommentsByPostIdCommand command = new GetCommentsByPostIdCommand();
+        command.setPostId(postId);
+        QueryPageableCommand queryPageableCommand = new QueryPageableCommand(page, pageSize, sortBy, Sort.Direction.fromString(sortOrder));
+        command.setPageableCommand(queryPageableCommand);
+        CommentQueryPageResult postComments = commentService.getPostComments(command);
         return ResponseEntity.ok(postComments);
     }
 

@@ -21,7 +21,7 @@ public interface CommentService {
 
     CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command);
 
-    List<CommentQueryResult> getPostComments(String commentId);
+    CommentQueryPageResult getPostComments(GetCommentsByPostIdCommand command);
 
     List<CommentQueryResult> getCommentsLikedByUser(String username);
 
