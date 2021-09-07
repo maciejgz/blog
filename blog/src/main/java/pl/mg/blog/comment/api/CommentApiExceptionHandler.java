@@ -1,4 +1,4 @@
-package pl.mg.blog.comment;
+package pl.mg.blog.comment.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
