@@ -37,4 +37,9 @@ public class PostQueryService {
     public Optional<PostQueryResult> getRandomPost() {
         return repository.getRandomPost().map(PostQueryResult::ofPost);
     }
+
+    public PostQueryPagedResult search(SearchPostCommand command) {
+        //TODO implement
+        return null;
+    }
 }
