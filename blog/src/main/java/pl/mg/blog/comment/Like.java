@@ -2,6 +2,8 @@ package pl.mg.blog.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -14,6 +16,7 @@ public class Like {
     private String username;
 
     @NotNull
+    @Field(type = FieldType.Date)
     private Instant date;
 
 }

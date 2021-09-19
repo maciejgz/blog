@@ -20,16 +20,7 @@ public class SimulationProcess implements Runnable {
         while (true) {
             int selectedEvent = rand.nextInt(numberOfEvents) + 1;
             log.debug("SELECTED EVENT: " + selectedEvent);
-            SimulationEventExecutor strategy = null;
-            if (selectedEvent == SimulationEvent.ADD_POST.getId()) {
-                strategy = new AddPostEventExecutor();
-            } else if (selectedEvent == SimulationEvent.ADD_COMMENT.getId()) {
-                strategy = new AddCommentEventExecutor();
-            } else if (selectedEvent == SimulationEvent.LIKE_COMMENT.getId()) {
-                strategy = new LikeCommentEventExecutor();
-            } else if (selectedEvent == SimulationEvent.DISLIKE_COMMENT.getId()) {
-                strategy = new DislikeCommentEventExecutor();
-            }
+            SimulationEventExecutor strategy = getSimulationEventExecutor(selectedEvent);
 
             if (strategy != null) {
                 strategy.execute();
@@ -43,5 +34,19 @@ public class SimulationProcess implements Runnable {
             }
         }
 
+    }
+
+    private SimulationEventExecutor getSimulationEventExecutor(int selectedEvent) {
+        SimulationEventExecutor strategy = null;
+        if (selectedEvent == SimulationEvent.ADD_POST.getId()) {
+            strategy = new AddPostEventExecutor();
+        } else if (selectedEvent == SimulationEvent.ADD_COMMENT.getId()) {
+            strategy = new AddCommentEventExecutor();
+        } else if (selectedEvent == SimulationEvent.LIKE_COMMENT.getId()) {
+            strategy = new LikeCommentEventExecutor();
+        } else if (selectedEvent == SimulationEvent.DISLIKE_COMMENT.getId()) {
+            strategy = new DislikeCommentEventExecutor();
+        }
+        return strategy;
     }
 }

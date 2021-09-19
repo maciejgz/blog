@@ -1,18 +1,23 @@
 package pl.mg.blog.post;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import pl.mg.blog.comment.api.CommentSort;
 import pl.mg.blog.commons.ApiErrorResponse;
+import pl.mg.blog.commons.QueryPageableCommand;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -63,10 +68,36 @@ public class PostController {
         }
     }
 
-    //getRandomPost
-    @GetMapping(value = "")
+    //searchPosts
+    @GetMapping(value = "/")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PostQueryResult> getPost() throws PostNotFoundException {
+    public ResponseEntity<PostQueryPagedResult> search(
+            @RequestParam(name = "q", required = false) String q,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
+            @RequestParam(name = "sortBy", required = false) @Valid @CommentSort String sortBy,
+            @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
+    ) {
+        SearchPostCommand command = new SearchPostCommand(q,
+                new QueryPageableCommand(page, pageSize, sortBy, Sort.Direction.fromString(sortOrder)));
+        PostQueryPagedResult result = postQueryService.search(command);
+        return ResponseEntity.ok(result);
+    }
+
+    //get author suggestions
+    @GetMapping(value = "/author/suggestions")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Set<String>> authorSuggestions(
+            @RequestParam(name = "q", required = false) String q
+    ) {
+        Set<String> result = postQueryService.getAuthorSuggestions(q);
+        return ResponseEntity.ok(result);
+    }
+
+    //getRandomPost
+    @GetMapping(value = "/random")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PostQueryResult> getRandomPost() throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.getRandomPost();
         if (post.isPresent()) {
             return ResponseEntity.ok(post.get());

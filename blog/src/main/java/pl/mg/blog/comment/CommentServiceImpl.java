@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
 import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
+import pl.mg.blog.comment.repository.search.CommentSearchRepository;
 import pl.mg.blog.commons.QueryResultPage;
 
 import java.time.Instant;
@@ -23,9 +24,12 @@ public class CommentServiceImpl implements CommentService {
 
     public static final String COMMENT_NOT_EXIST_LABEL = "Comment %s not exist";
     private final CommentRepository commentRepository;
+    private final CommentSearchRepository commentSearchRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,
+            CommentSearchRepository commentSearchRepository) {
         this.commentRepository = commentRepository;
+        this.commentSearchRepository = commentSearchRepository;
     }
 
     @Override
@@ -38,6 +42,7 @@ public class CommentServiceImpl implements CommentService {
         Instant created = Instant.now();
         comment.setCreated(created);
         Comment savedComment = commentRepository.save(comment);
+        commentSearchRepository.save(comment);
         //TODO push notification about comment
         return new CommentQueryResult(savedComment);
     }
@@ -52,19 +57,20 @@ public class CommentServiceImpl implements CommentService {
             if (comment.get().getLikes() == null) {
                 comment.get().setLikes(new HashSet<>());
             }
-            if (commentAlreadyLiked(command.getUsername(), comment.get().getLikes())) {
-                throw new CommentAlreadyLikedException(String.format("Comment already liked %s", command.getCommentId()));
+            if (isCommentAlreadyLiked(command.getUsername(), comment.get().getLikes())) {
+                throw new CommentAlreadyLikedException(
+                        String.format("Comment already liked %s", command.getCommentId()));
             }
             Instant date = Instant.now();
             comment.get().getLikes().add(new Like(command.getUsername(), date));
             Comment savedLike = commentRepository.save(comment.get());
+            commentSearchRepository.save(comment.get());
             //TODO push notification about comment like
             return new LikeCommentResponse(savedLike.getId(), command.getUsername(), date);
         } else {
             throw new CommentNotExistException(String.format(COMMENT_NOT_EXIST_LABEL, command.getCommentId()));
         }
     }
-
 
     @Override
     @Transactional
@@ -76,11 +82,13 @@ public class CommentServiceImpl implements CommentService {
             if (comment.get().getLikes() == null) {
                 comment.get().setLikes(new HashSet<>());
             }
-            if (commentAlreadyDisliked(command.getUsername(), comment.get().getLikes())) {
-                throw new CommentAlreadyDislikedException(String.format("Comment already disliked %s", command.getCommentId()));
+            if (isCommentAlreadyDisliked(command.getUsername(), comment.get().getLikes())) {
+                throw new CommentAlreadyDislikedException(
+                        String.format("Comment already disliked %s", command.getCommentId()));
             }
             comment.get().getLikes().removeIf(like -> command.getUsername().equalsIgnoreCase(like.getUsername()));
             Comment savedComment = commentRepository.save(comment.get());
+            commentSearchRepository.save(comment.get());
             //TODO push notification about comment dislike
             return new DislikeCommentResponse(savedComment.getId(), command.getUsername());
         } else {
@@ -103,11 +111,14 @@ public class CommentServiceImpl implements CommentService {
     public CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command) {
         //TODO business validation
         //TODO verify user existence in user microservice
-        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(), command.getPageableCommand().getPageSize());
-        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
+        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(),
+                command.getPageableCommand().getPageSize());
+        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(),
+                command.getPageableCommand().getSortBy());
         Page<Comment> res = commentRepository.findAllByAuthor(command.getUsername(), pageRequest);
         QueryResultPage pageInfo = new QueryResultPage(res.getNumber(), res.getSize(), res.getTotalPages(),
-                res.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
+                res.getTotalElements(), command.getPageableCommand().getSortBy(),
+                command.getPageableCommand().getSortDirection().name());
         List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
         return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();
     }
@@ -116,11 +127,14 @@ public class CommentServiceImpl implements CommentService {
     public CommentQueryPageResult getPostComments(GetCommentsByPostIdCommand command) {
         //TODO business validation
         //TODO verify post existence in post microservice
-        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(), command.getPageableCommand().getPageSize());
-        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(), command.getPageableCommand().getSortBy());
+        PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(),
+                command.getPageableCommand().getPageSize());
+        pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(),
+                command.getPageableCommand().getSortBy());
         Page<Comment> res = commentRepository.findAllByPostId(command.getPostId(), pageRequest);
         QueryResultPage pageInfo = new QueryResultPage(res.getNumber(), res.getSize(), res.getTotalPages(),
-                res.getTotalElements(), command.getPageableCommand().getSortBy(), command.getPageableCommand().getSortDirection().name());
+                res.getTotalElements(), command.getPageableCommand().getSortBy(),
+                command.getPageableCommand().getSortDirection().name());
         List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
         return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();
     }
@@ -139,11 +153,11 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.getRandomComment().map(CommentQueryResult::new);
     }
 
-    private boolean commentAlreadyLiked(String username, Set<Like> likes) {
+    private boolean isCommentAlreadyLiked(String username, Set<Like> likes) {
         return likes.stream().anyMatch(like -> username.equalsIgnoreCase(like.getUsername()));
     }
 
-    private boolean commentAlreadyDisliked(String username, Set<Like> likes) {
+    private boolean isCommentAlreadyDisliked(String username, Set<Like> likes) {
         return likes.stream().noneMatch(like -> username.equalsIgnoreCase(like.getUsername()));
     }
 }

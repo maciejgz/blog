@@ -3,11 +3,11 @@ version: '3.1'
 services:
 
   blog_mongo_db:
-    image: mongo:4.4.4
+    image: mongo:4.2.8
     restart: always
     container_name: blog_mongo_db
     volumes:
-      - /volumes/blog/mongodb:/data/db
+      - ~/volumes/blog/mongodb:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: qaz123
@@ -29,6 +29,56 @@ services:
       ME_CONIFG_MONGODB_PORT: 27017
     depends_on:
       - blog_mongo_db
+    networks:
+      - blog-network
+
+  blog_es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    container_name: blog_es01
+    environment:
+      - node.name=blog_es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=blog_es02
+      - cluster.initial_master_nodes=blog_es01,blog_es02
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ~/volumes/blog/data01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - blog-network
+
+  blog_es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    container_name: blog_es02
+    environment:
+      - node.name=blog_es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=blog_es01
+      - cluster.initial_master_nodes=blog_es01,blog_es02
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ~/volumes/blog/data02:/usr/share/elasticsearch/data
+    networks:
+      - blog-network
+
+  blog_kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.1
+    environment:
+      SERVER_NAME: blog.kibana
+      ELASTICSEARCH_HOSTS: '["http://blog_es01:9200"]'
+    ports:
+      - "5601:5601"
     networks:
       - blog-network
 
