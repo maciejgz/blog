@@ -17,6 +17,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -74,11 +75,22 @@ public class PostController {
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
+            @RequestParam(name = "sortBy", required = false) @Valid @CommentSort String sortBy,
             @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
     ) {
-        SearchPostCommand command = new SearchPostCommand(q, new QueryPageableCommand(page, pageSize, sortBy, Sort.Direction.fromString(sortOrder)));
+        SearchPostCommand command = new SearchPostCommand(q,
+                new QueryPageableCommand(page, pageSize, sortBy, Sort.Direction.fromString(sortOrder)));
         PostQueryPagedResult result = postQueryService.search(command);
+        return ResponseEntity.ok(result);
+    }
+
+    //get author suggestions
+    @GetMapping(value = "/author/suggestions")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Set<String>> authorSuggestions(
+            @RequestParam(name = "q", required = false) String q
+    ) {
+        Set<String> result = postQueryService.getAuthorSuggestions(q);
         return ResponseEntity.ok(result);
     }
 
