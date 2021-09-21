@@ -2,10 +2,12 @@ package pl.mg.blog.post;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.mg.blog.commons.QueryResultPage;
+import pl.mg.blog.config.CacheConfig;
 import pl.mg.blog.post.repository.search.PostSearchRepository;
 
 import java.util.List;
@@ -28,6 +30,7 @@ public class PostQueryService {
         this.postSearchRepository = postSearchRepository;
     }
 
+    @Cacheable(value = CacheConfig.POST_CACHE, key = "#id")
     public Optional<PostQueryResult> findByID(@Valid @NotEmpty String id) {
         Optional<Post> post = this.repository.findById(id);
         return post.map(PostQueryResult::ofPost);
@@ -38,7 +41,9 @@ public class PostQueryService {
         return allByAuthor.stream().map(PostQueryResult::ofPost).collect(Collectors.toList());
     }
 
+    @Cacheable(value = CacheConfig.POST_CACHE, key = "'comment' + #commentId")
     public Optional<PostQueryResult> findByCommentId(@Valid @NotEmpty String commentId) {
+        //TODO is going to start work when post will be updated with comments list - shall be updated asynchronously
         Optional<Post> byComment = repository.findFirstByCommentIdsContains(commentId);
         return byComment.map(PostQueryResult::ofPost);
     }

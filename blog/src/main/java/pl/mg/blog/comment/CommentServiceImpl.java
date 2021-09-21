@@ -1,6 +1,7 @@
 package pl.mg.blog.comment;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
 import pl.mg.blog.comment.exception.CommentNotExistException;
 import pl.mg.blog.comment.repository.search.CommentSearchRepository;
 import pl.mg.blog.commons.QueryResultPage;
+import pl.mg.blog.config.CacheConfig;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -97,6 +99,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = CacheConfig.COMMENT_CACHE, key = "#commentId")
     public CommentQueryResult getComment(String commentId) throws CommentNotExistException {
         //TODO business validation
         Optional<Comment> comment = commentRepository.findById(commentId);
