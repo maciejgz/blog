@@ -74,6 +74,7 @@ services:
 
   blog_kibana:
     image: docker.elastic.co/kibana/kibana:7.14.1
+    container_name: blog_kibana
     environment:
       SERVER_NAME: blog.kibana
       ELASTICSEARCH_HOSTS: '["http://blog_es01:9200"]'
