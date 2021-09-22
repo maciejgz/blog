@@ -1,4 +1,4 @@
-package pl.mg.blog.config.security;
+package pl.mg.blog.config;
 
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;

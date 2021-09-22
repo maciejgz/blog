@@ -5,15 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mg.blog.commons.Query;
 
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentQueryResult implements Query {
+public class CommentQueryResult implements Query, Serializable {
 
     @NotNull
     private String id;

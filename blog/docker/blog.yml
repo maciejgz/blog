@@ -83,5 +83,18 @@ services:
     networks:
       - blog-network
 
+  blog_redis:
+    container_name: blog_redis
+    image: redis:6.2.3
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - blog-network
+
 networks:
   blog-network:
