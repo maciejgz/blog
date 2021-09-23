@@ -17,8 +17,9 @@
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <modules>
-        <module>user-service</module>
-        <module>config-server</module>
+        <module>svc-user</module>
+        <module>config</module>
+        <module>discovery</module>
     </modules>
     <build>
         <plugins>
@@ -47,4 +48,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
