@@ -17,9 +17,10 @@
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <modules>
-        <module>svc-user</module>
-        <module>config</module>
-        <module>discovery</module>
+        <module>user-service</module>
+        <module>configuration-service</module>
+        <module>discovery-service</module>
+        <module>simulation-service</module>
     </modules>
     <build>
         <plugins>
