@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.mg.blog.simulator.commons.UserDto;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,13 +34,16 @@ public class SimulationService {
         }
 
         for (int i = 0; i < command.getNumberOfThreads(); i++) {
-            executorService.submit(new SimulationProcess());
+            try {
+                executorService.submit(new SimulationProcess());
+            } catch (NoSuchAlgorithmException e) {
+                log.error("Simulation process could not be created due to the rand algorithm availability.");
+            }
         }
 
         log.debug("Simulation started...");
         simulationStarted = Boolean.TRUE;
     }
-
 
     public void stopSimulation() throws SimulationAlreadyStoppedException {
         if (!simulationStarted) {
@@ -69,7 +73,7 @@ public class SimulationService {
         for (int i = 0; i < numberOfUsers; i++) {
             UserDto user = new UserDto(faker.name().username(), faker.funnyName().name());
             //FIXME add test users
-           // UserRepository.USERS.putIfAbsent(user.getUsername(), user);
+            // UserRepository.USERS.putIfAbsent(user.getUsername(), user);
         }
         //log.debug("Users created: {}", UserRepository.USERS.size() - 2);
     }

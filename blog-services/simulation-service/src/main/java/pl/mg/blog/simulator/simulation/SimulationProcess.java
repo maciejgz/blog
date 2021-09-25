@@ -1,6 +1,7 @@
 package pl.mg.blog.simulator.simulation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import pl.mg.blog.simulator.events.AddCommentEventExecutor;
@@ -10,20 +11,27 @@ import pl.mg.blog.simulator.events.LikeCommentEventExecutor;
 import pl.mg.blog.simulator.events.SimulationEvent;
 import pl.mg.blog.simulator.events.SimulationEventExecutor;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 @Component
-@Scope(value = "prototype")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
 public class SimulationProcess implements Runnable {
 
+    private final Random random = SecureRandom.getInstanceStrong();
+
+    public SimulationProcess() throws NoSuchAlgorithmException {
+        super();
+    }
+
     @Override
     public void run() {
-        Random rand = new Random();
         int numberOfEvents = SimulationEvent.values().length;
 
         while (true) {
-            int selectedEvent = rand.nextInt(numberOfEvents) + 1;
+            int selectedEvent = random.nextInt(numberOfEvents) + 1;
             log.debug("SELECTED EVENT: " + selectedEvent);
             SimulationEventExecutor strategy = getSimulationEventExecutor(selectedEvent);
 
