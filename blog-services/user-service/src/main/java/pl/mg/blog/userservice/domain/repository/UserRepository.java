@@ -17,4 +17,8 @@ public class UserRepository {
         USERS.put("user2", new UserDto("user2", "pass2"));
     }
 
+    private UserRepository() {
+
+    }
+
 }

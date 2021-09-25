@@ -21,6 +21,7 @@
         <module>configuration-service</module>
         <module>discovery-service</module>
         <module>simulation-service</module>
+        <module>gateway-service</module>
     </modules>
     <build>
         <plugins>
