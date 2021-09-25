@@ -1,7 +1,5 @@
 server:
   port: 8080
-##  servlet:
-##    context-path: /api/v1/
 
 spring:
   application:
@@ -20,6 +18,9 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+      filter:
+        prefix-path:
+          enabled: true
 
 ## discovery
 eureka:

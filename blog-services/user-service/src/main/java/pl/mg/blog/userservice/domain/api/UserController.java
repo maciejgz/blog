@@ -41,7 +41,6 @@ public class UserController {
         return ResponseEntity.ok(UserRepository.USERS.get(UserRepository.USERS.keySet().toArray()[index]));
     }
 
-    //TODO implement registration endpoint
     @PostMapping(value = "")
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) {
         UserRepository.USERS.put(userDto.getUsername(), userDto);
