@@ -25,6 +25,12 @@ public class GatewayServiceApplication {
                         .path("/api/v1/get")
                         .filters(f -> f.addRequestHeader("Hello", "World"))
                         .uri("http://httpbin.org:80"))
+                .route(p -> p
+                        .path("/api/v1/user-service/**")
+                        .uri("lb://user-service"))
+                .route(p -> p
+                        .path("/api/v1/simulation-service/**")
+                        .uri("lb://simulation-service"))
                 .build();
     }
 
