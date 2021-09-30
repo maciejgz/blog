@@ -31,6 +31,9 @@ public class GatewayServiceApplication {
                 .route(p -> p
                         .path("/api/v1/simulation-service/**")
                         .uri("lb://simulation-service"))
+                .route(p -> p
+                        .path("/api/v1/post-service/**")
+                        .uri("lb://post-service"))
                 .build();
     }
 
