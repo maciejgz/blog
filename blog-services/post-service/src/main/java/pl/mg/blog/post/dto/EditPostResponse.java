@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 @Value
 public class EditPostResponse {
 
+    @NotNull String author;
+
     @NotNull String id;
 
     @NotEmpty String content;

@@ -1,10 +1,8 @@
-package pl.mg.post.controller;
+package pl.mg.blog.post.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.mg.blog.commons.ApiErrorResponse;
 import pl.mg.blog.post.dto.*;
@@ -25,6 +23,7 @@ import java.util.Set;
 public class PostController {
 
     protected static final String POST_NOT_FOUND_MESSAGE = "Post not found";
+    protected static final String USER_NOT_FOUND_MESSAGE = "User not found";
     private final PostCommandServiceImpl postCommandServiceImpl;
     private final PostQueryService postQueryService;
 
@@ -35,29 +34,36 @@ public class PostController {
 
     //create post
     @PostMapping(value = "")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity createPost(@RequestBody @Valid CreatePostResponse dto, Authentication authentication) {
+//    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> createPost(@RequestBody @Valid CreatePostResponse dto) throws UserNotFoundException {
         log.debug("create post");
         //TODO add object factory in the aggregate
         postCommandServiceImpl.createPost(
-                new CreatePostCommand(authentication.getName(), dto.getTitle(), dto.getContent()));
+                new CreatePostCommand(dto.getAuthor(), dto.getTitle(), dto.getContent()));
         return ResponseEntity.ok().build();
     }
 
+    //getAllPosts
+    @GetMapping(value = "")
+    public ResponseEntity<List<PostQueryResult>> getPosts() {
+        return ResponseEntity.ok(postQueryService.getAll());
+    }
+
+
     //edit post
     @PutMapping(value = "")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity editPost(@RequestBody @Valid EditPostResponse dto, Authentication authentication)
-            throws PostNotFoundException {
+//    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> editPost(@RequestBody @Valid EditPostResponse dto)
+            throws PostNotFoundException, UserNotFoundException {
         log.debug("editPost");
         postCommandServiceImpl.editPost(
-                new EditPostCommand(dto.getId(), authentication.getName(), dto.getTitle(), dto.getContent()));
+                new EditPostCommand(dto.getId(), dto.getAuthor(), dto.getTitle(), dto.getContent()));
         return ResponseEntity.ok().build();
     }
 
     //getForPostId
     @GetMapping(value = "/{postId}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getPost(@PathVariable(name = "postId") @NotEmpty @Valid String postId)
             throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.findByID(postId);
@@ -68,9 +74,10 @@ public class PostController {
         }
     }
 
+
     //searchPosts
     @GetMapping(value = "/")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryPagedResult> search(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
@@ -86,7 +93,7 @@ public class PostController {
 
     //get author suggestions
     @GetMapping(value = "/author/suggestions")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Set<String>> authorSuggestions(
             @RequestParam(name = "q", required = false) String q
     ) {
@@ -96,7 +103,7 @@ public class PostController {
 
     //getRandomPost
     @GetMapping(value = "/random")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getRandomPost() throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.getRandomPost();
         if (post.isPresent()) {
@@ -108,7 +115,7 @@ public class PostController {
 
     //getPostsForUserId
     @GetMapping(value = "/user/{userId}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<PostQueryResult>> getUserPosts(
             @PathVariable(name = "userId") @Valid @NotEmpty String userId) {
         return ResponseEntity.ok(postQueryService.findByUsername(userId));
@@ -116,7 +123,7 @@ public class PostController {
 
     //getForCommentId
     @GetMapping(value = "/comment/{commentId}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getPostByCommentId(
             @PathVariable(name = "commentId") @Valid @NotEmpty String commentId)
             throws PostNotFoundException {
@@ -133,6 +140,14 @@ public class PostController {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(POST_NOT_FOUND_MESSAGE, details);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
+    }
+
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<ApiErrorResponse> handleUserNotFound(Exception ex) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(USER_NOT_FOUND_MESSAGE, details);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
 }

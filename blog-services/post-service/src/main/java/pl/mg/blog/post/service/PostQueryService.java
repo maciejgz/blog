@@ -17,6 +17,8 @@ public interface PostQueryService {
     @Cacheable(value = CacheConfig.POST_CACHE, key = "#id")
     public Optional<PostQueryResult> findByID(@Valid @NotEmpty String id);
 
+    List<PostQueryResult> getAll();
+
     public List<PostQueryResult> findByUsername(@Valid @NotEmpty String userId);
 
     @Cacheable(value = CacheConfig.POST_CACHE, key = "'comment' + #commentId")
