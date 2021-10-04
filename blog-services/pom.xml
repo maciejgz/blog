@@ -19,6 +19,7 @@
     <modules>
         <module>user-service</module>
         <module>post-service</module>
+        <module>comment-service</module>
         <module>configuration-service</module>
         <module>discovery-service</module>
         <module>simulation-service</module>
