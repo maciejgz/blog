@@ -15,7 +15,8 @@ public class PostRepositoryLocalImpl implements PostRepository {
 
     @Override
     public Post add(Post post) {
-        return POSTS.put(post.getId(), post);
+        POSTS.put(post.getId(), post);
+        return post;
     }
 
     @Override

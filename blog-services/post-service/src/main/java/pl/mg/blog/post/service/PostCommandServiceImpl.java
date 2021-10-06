@@ -3,10 +3,7 @@ package pl.mg.blog.post.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.mg.blog.commons.UserDto;
-import pl.mg.blog.post.dto.CreatePostCommand;
-import pl.mg.blog.post.dto.EditPostCommand;
-import pl.mg.blog.post.dto.PostNotFoundException;
-import pl.mg.blog.post.dto.UserNotFoundException;
+import pl.mg.blog.post.dto.*;
 import pl.mg.blog.post.repository.Post;
 import pl.mg.blog.post.repository.PostRepository;
 
@@ -27,12 +24,12 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
-    public void createPost(CreatePostCommand command) throws UserNotFoundException {
+    public PostQueryResult createPost(CreatePostCommand command) throws UserNotFoundException {
         log.debug("createPost() called with: command = [" + command + "]");
         verifyIfUserExist(command.getUsername());
         Post post = new Post(UUID.randomUUID().toString(), command.getUsername(), command.getTitle(), command.getContent(),
                 Instant.now(), null, 0L, null);
-        postRepository.add(post);
+        return PostQueryResult.ofPost(postRepository.add(post));
     }
 
     @Override

@@ -35,12 +35,12 @@ public class PostController {
     //create post
     @PostMapping(value = "")
 //    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> createPost(@RequestBody @Valid CreatePostResponse dto) throws UserNotFoundException {
+    public ResponseEntity<PostQueryResult> createPost(@RequestBody @Valid CreatePostResponse dto) throws UserNotFoundException {
         log.debug("create post");
         //TODO add object factory in the aggregate
-        postCommandServiceImpl.createPost(
+        PostQueryResult post = postCommandServiceImpl.createPost(
                 new CreatePostCommand(dto.getAuthor(), dto.getTitle(), dto.getContent()));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(post);
     }
 
     //getAllPosts
