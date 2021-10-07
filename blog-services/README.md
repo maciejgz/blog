@@ -10,17 +10,24 @@
 ### Spring Cloud components
 
 - Eureka - service registration
-- 
+- Spring Config
+- Sleuth - tracing system
+- Zipkin - to analyze traces
 
-### port mapping
+### Custom modules port mapping
 
 |Module|Ports|
 |------|-----|
 |Spring Cloud Config server|8888|
 |Eureka server|8761|
 |Gateway service|8080|
-|Sonar|9100|
 |Simulation service|8099|
 |User services|8100 - 8199|
 |Post services|8200 - 8299|
 |Comment services|8300 - 8399|
+
+### External modules (docker)
+|Module|Ports|
+|------|-----|
+|Sonar|9100|
+|Zipkin server|9411|

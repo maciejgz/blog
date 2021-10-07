@@ -96,5 +96,13 @@ services:
     networks:
       - blog-network
 
+  blog_zipkin:
+    container_name: blog_zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - blog-network
+
 networks:
   blog-network:
