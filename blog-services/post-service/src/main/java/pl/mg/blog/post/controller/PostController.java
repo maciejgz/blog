@@ -36,7 +36,7 @@ public class PostController {
     @PostMapping(value = "")
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> createPost(@RequestBody @Valid CreatePostResponse dto) throws UserNotFoundException {
-        log.debug("create post");
+        log.info("create post {}", dto);
         //TODO add object factory in the aggregate
         PostQueryResult post = postCommandServiceImpl.createPost(
                 new CreatePostCommand(dto.getAuthor(), dto.getTitle(), dto.getContent()));
@@ -46,6 +46,7 @@ public class PostController {
     //getAllPosts
     @GetMapping(value = "")
     public ResponseEntity<List<PostQueryResult>> getPosts() {
+        log.info("get all posts...");
         return ResponseEntity.ok(postQueryService.getAll());
     }
 
@@ -55,7 +56,7 @@ public class PostController {
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> editPost(@RequestBody @Valid EditPostResponse dto)
             throws PostNotFoundException, UserNotFoundException {
-        log.debug("editPost");
+        log.info("editPost {}", dto);
         postCommandServiceImpl.editPost(
                 new EditPostCommand(dto.getId(), dto.getAuthor(), dto.getTitle(), dto.getContent()));
         return ResponseEntity.ok().build();

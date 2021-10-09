@@ -1,4 +1,4 @@
-package pl.mg.blog.post.service;
+package pl.mg.blog.post.user.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;

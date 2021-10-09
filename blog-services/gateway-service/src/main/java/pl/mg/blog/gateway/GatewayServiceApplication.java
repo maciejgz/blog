@@ -24,7 +24,7 @@ public class GatewayServiceApplication {
                 .route(p -> p
                         .path("/api/v1/get")
                         .filters(f -> f.addRequestHeader("Hello", "World"))
-                        .uri("http://httpbin.org:80"))
+                        .uri("https://onet.pl"))
                 .route(p -> p
                         .path("/api/v1/user-service/**")
                         .uri("lb://user-service"))

@@ -6,6 +6,7 @@ import pl.mg.blog.commons.UserDto;
 import pl.mg.blog.post.dto.*;
 import pl.mg.blog.post.repository.Post;
 import pl.mg.blog.post.repository.PostRepository;
+import pl.mg.blog.post.user.client.UserClientService;
 
 import java.time.Instant;
 import java.util.Optional;

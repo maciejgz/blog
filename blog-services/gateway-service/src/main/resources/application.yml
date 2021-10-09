@@ -33,6 +33,16 @@ eureka:
   instance:
     prefer-ip-address: true
 
+## actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 
 
 

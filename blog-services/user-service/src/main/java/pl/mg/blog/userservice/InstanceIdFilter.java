@@ -7,6 +7,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filter providing instance ID to the user-service response headers.
+ */
 @Component
 public class InstanceIdFilter implements Filter {
 
