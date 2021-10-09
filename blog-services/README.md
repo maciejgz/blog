@@ -31,3 +31,9 @@
 |------|-----|
 |Sonar|9100|
 |Zipkin server|9411|
+
+### Run sonar analysis
+
+- start sonar container
+- Run maven command: `mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000` <br />
+`verify` step is needed to get sonar-project.properties file by maven plugin
