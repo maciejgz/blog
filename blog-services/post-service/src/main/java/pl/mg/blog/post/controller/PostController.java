@@ -75,6 +75,18 @@ public class PostController {
         }
     }
 
+    //check if post exists
+    @RequestMapping(value = "/{postId}", method = RequestMethod.HEAD)
+    public ResponseEntity<Void> postExists(@PathVariable(name = "postId") @NotEmpty @Valid String postId)
+            throws PostNotFoundException {
+        Optional<PostQueryResult> post = postQueryService.findByID(postId);
+        if (post.isPresent()) {
+            return ResponseEntity.ok().build();
+        } else {
+            throw new PostNotFoundException(POST_NOT_FOUND_MESSAGE);
+        }
+    }
+
 
     //searchPosts
     @GetMapping(value = "/")

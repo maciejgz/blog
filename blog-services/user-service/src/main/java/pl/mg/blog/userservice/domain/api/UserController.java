@@ -25,13 +25,22 @@ public class UserController {
 
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserDto> getUserByScreenname(@PathVariable(name = "username") String username) {
-        log.debug("Get user with name: {}...", username);
         log.info("Get user with name: {}...", username);
         UserDto userDto = UserRepository.USERS.get(username);
         if (userDto == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userDto);
+    }
+
+    @RequestMapping(value = "/{username}", method = RequestMethod.HEAD)
+    public ResponseEntity<Void> checkIfUserExist(@PathVariable(name = "username") String username) {
+        log.info("Get user with name: {}...", username);
+        UserDto userDto = UserRepository.USERS.get(username);
+        if (userDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/random")

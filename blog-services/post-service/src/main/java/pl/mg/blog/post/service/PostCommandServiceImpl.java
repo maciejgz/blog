@@ -1,12 +1,13 @@
 package pl.mg.blog.post.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import pl.mg.blog.commons.UserDto;
 import pl.mg.blog.post.dto.*;
 import pl.mg.blog.post.repository.Post;
 import pl.mg.blog.post.repository.PostRepository;
-import pl.mg.blog.post.user.client.UserClientService;
+import pl.mg.blog.post.user.client.UserClient;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -17,11 +18,11 @@ import java.util.UUID;
 public class PostCommandServiceImpl implements PostCommandService {
 
     private final PostRepository postRepository;
-    private final UserClientService userClientService;
+    private final UserClient userClient;
 
-    public PostCommandServiceImpl(PostRepository postRepository, UserClientService userClientService) {
+    public PostCommandServiceImpl(PostRepository postRepository, UserClient userClient) {
         this.postRepository = postRepository;
-        this.userClientService = userClientService;
+        this.userClient = userClient;
     }
 
     @Override
@@ -51,8 +52,8 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     private void verifyIfUserExist(String username) throws UserNotFoundException {
-        UserDto user = userClientService.findByUsername(username);
-        if (user == null) {
+        ResponseEntity<Void> response = userClient.checkIfUserExists(username);
+        if (response == null || response.getStatusCode() != HttpStatus.OK) {
             throw new UserNotFoundException("User " + username + " not exists");
         }
     }

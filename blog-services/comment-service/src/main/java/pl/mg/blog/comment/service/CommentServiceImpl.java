@@ -1,14 +1,16 @@
 package pl.mg.blog.comment.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
-import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
-import pl.mg.blog.comment.exception.CommentNotExistException;
+import pl.mg.blog.comment.exception.*;
 import pl.mg.blog.comment.model.*;
+import pl.mg.blog.comment.post.client.PostClient;
 import pl.mg.blog.comment.repository.Comment;
 import pl.mg.blog.comment.repository.CommentRepository;
 import pl.mg.blog.comment.repository.Like;
+import pl.mg.blog.comment.user.client.UserClient;
 
 import java.time.Instant;
 import java.util.*;
@@ -21,16 +23,19 @@ public class CommentServiceImpl implements CommentService {
     public static final String COMMENT_NOT_EXIST_LABEL = "Comment %s not exist";
 
     private final CommentRepository commentRepository;
+    private final PostClient postClient;
+    private final UserClient userClient;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostClient postClient, UserClient userClient) {
         this.commentRepository = commentRepository;
+        this.postClient = postClient;
+        this.userClient = userClient;
     }
 
     @Override
-    public CommentQueryResult addComment(AddCommentCommand command) {
-        //TODO business validation
-        //TODO verify post existence in post microservice using HEAD request: HEAD  post/{postId}.
-        // User is verified in controller based on the token
+    public CommentQueryResult addComment(AddCommentCommand command) throws PostNotFoundException, UserNotFoundException {
+        checkIfPostExists(command.getPostId());
+        checkIfUserExist(command.getUsername());
         Comment comment = new Comment(command);
         Instant created = Instant.now();
         comment.setCreated(created);
@@ -42,8 +47,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public LikeCommentResponse likeComment(LikeCommentCommand command)
-            throws CommentNotExistException, CommentAlreadyLikedException {
-        //TODO business validation
+            throws CommentNotExistException, CommentAlreadyLikedException, UserNotFoundException {
+        checkIfUserExist(command.getUsername());
         Optional<Comment> comment = commentRepository.findById(command.getCommentId());
         if (comment.isPresent()) {
             if (comment.get().getLikes() == null) {
@@ -71,10 +76,24 @@ public class CommentServiceImpl implements CommentService {
         return likes.stream().noneMatch(like -> username.equalsIgnoreCase(like.getUsername()));
     }
 
+    private void checkIfPostExists(String postId) throws PostNotFoundException {
+        ResponseEntity<Void> response = postClient.checkIfPostExists(postId);
+        if (response == null || response.getStatusCode() != HttpStatus.OK) {
+            throw new PostNotFoundException("Post " + postId + " not exists");
+        }
+    }
+
+    private void checkIfUserExist(String username) throws UserNotFoundException {
+        ResponseEntity<Void> response = userClient.checkIfUserExists(username);
+        if (response == null || response.getStatusCode() != HttpStatus.OK) {
+            throw new UserNotFoundException("User " + username + " not exists");
+        }
+    }
+
     @Override
     public DislikeCommentResponse dislikeComment(DislikeCommentCommand command)
-            throws CommentNotExistException, CommentAlreadyDislikedException {
-        //TODO business validation - user and post existance
+            throws CommentNotExistException, CommentAlreadyDislikedException, UserNotFoundException {
+        checkIfUserExist(command.getUsername());
         Optional<Comment> comment = commentRepository.findById(command.getCommentId());
         if (comment.isPresent()) {
             if (comment.get().getLikes() == null) {
@@ -106,10 +125,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command) {
-        //TODO business validation
-        //TODO verify user existence in user microservice
-        //TODO implement
+    public CommentQueryPageResult getUserComments(GetCommentsByUserIdCommand command) throws UserNotFoundException {
+        //TODO implement pagination
         /*PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(),
                 command.getPageableCommand().getPageSize());
         pageRequest = pageRequest.withSort(command.getPageableCommand().getSortDirection(),
@@ -120,14 +137,13 @@ public class CommentServiceImpl implements CommentService {
                 command.getPageableCommand().getSortDirection().name());
         List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
         return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();*/
+        checkIfUserExist(command.getUsername());
         List<Comment> res = commentRepository.findAllByAuthor(command.getUsername());
         return new CommentQueryPageResult(res.stream().map(CommentQueryResult::new).collect(Collectors.toList()), null);
     }
 
     @Override
-    public CommentQueryPageResult getPostComments(GetCommentsByPostIdCommand command) {
-        //TODO business validation
-        //TODO verify post existence in post microservice
+    public CommentQueryPageResult getPostComments(GetCommentsByPostIdCommand command) throws PostNotFoundException {
         //TODO pagination
       /*  PageRequest pageRequest = PageRequest.of(command.getPageableCommand().getPage(),
                 command.getPageableCommand().getPageSize());
@@ -139,15 +155,15 @@ public class CommentServiceImpl implements CommentService {
                 command.getPageableCommand().getSortDirection().name());
         List<CommentQueryResult> result = res.get().map(CommentQueryResult::new).collect(Collectors.toList());
         return CommentQueryPageResult.builder().result(result).pageInfo(pageInfo).build();*/
+        checkIfPostExists(command.getPostId());
         List<Comment> res = commentRepository.findAllByPostId(command.getPostId());
         return new CommentQueryPageResult(res.stream().map(CommentQueryResult::new).collect(Collectors.toList()), null);
     }
 
     @Override
-    public List<CommentQueryResult> getCommentsLikedByUser(String username) {
-        //TODO business validation - user existence
-        //TODO verify user existence in user microservice
+    public List<CommentQueryResult> getCommentsLikedByUser(String username) throws UserNotFoundException {
         //TODO add search criteria
+        checkIfUserExist(username);
         Set<Comment> allByLikedComment = commentRepository.findAllByLikesUsername(username);
         return allByLikedComment.stream().map(CommentQueryResult::new).collect(Collectors.toList());
     }

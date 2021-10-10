@@ -6,9 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.mg.blog.comment.commons.QueryPageableCommand;
-import pl.mg.blog.comment.exception.CommentAlreadyDislikedException;
-import pl.mg.blog.comment.exception.CommentAlreadyLikedException;
-import pl.mg.blog.comment.exception.CommentNotExistException;
+import pl.mg.blog.comment.exception.*;
 import pl.mg.blog.comment.model.*;
 import pl.mg.blog.comment.service.CommentService;
 
@@ -34,7 +32,8 @@ public class CommentController {
     //post comment
     @PostMapping(value = "")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command) {
+    public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command)
+            throws UserNotFoundException, PostNotFoundException {
         CommentQueryResult commentQueryResult = commentService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
     }
@@ -42,7 +41,8 @@ public class CommentController {
     //like comment
     @PostMapping(value = "/like")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<LikeCommentResponse> likeComment(@Valid @RequestBody LikeCommentCommand command) throws CommentNotExistException, CommentAlreadyLikedException {
+    public ResponseEntity<LikeCommentResponse> likeComment(@Valid @RequestBody LikeCommentCommand command)
+            throws CommentNotExistException, CommentAlreadyLikedException, UserNotFoundException {
         LikeCommentResponse likeCommentResponse = commentService.likeComment(command);
         return ResponseEntity.ok(likeCommentResponse);
     }
@@ -51,7 +51,7 @@ public class CommentController {
     @PostMapping(value = "/dislike")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<DislikeCommentResponse> dislikeComment(@Valid @RequestBody DislikeCommentCommand command)
-            throws CommentNotExistException, CommentAlreadyDislikedException {
+            throws CommentNotExistException, CommentAlreadyDislikedException, UserNotFoundException {
         DislikeCommentResponse dislikeCommentResponse = commentService.dislikeComment(command);
         return ResponseEntity.ok(dislikeCommentResponse);
     }
@@ -73,7 +73,7 @@ public class CommentController {
                                                                   @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
                                                                   @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
                                                                   @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
-    ) {
+    ) throws UserNotFoundException {
         GetCommentsByUserIdCommand command = new GetCommentsByUserIdCommand();
         command.setUsername(username);
         QueryPageableCommand queryPageableCommand = new QueryPageableCommand(page, pageSize, sortBy, sortOrder);
@@ -89,7 +89,7 @@ public class CommentController {
                                                                   @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
                                                                   @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
                                                                   @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
-                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) {
+                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) throws PostNotFoundException {
         GetCommentsByPostIdCommand command = new GetCommentsByPostIdCommand();
         command.setPostId(postId);
         QueryPageableCommand queryPageableCommand = new QueryPageableCommand(page, pageSize, sortBy, sortOrder);
@@ -101,7 +101,8 @@ public class CommentController {
     //get all user's likes
     @GetMapping(value = "/like/user/{userId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable @Valid @NotEmpty String userId) {
+    public ResponseEntity<List<CommentQueryResult>> getUserLikedComments(@PathVariable @Valid @NotEmpty String userId)
+            throws UserNotFoundException {
         List<CommentQueryResult> commentsLikedByUser = commentService.getCommentsLikedByUser(userId);
         return ResponseEntity.ok(commentsLikedByUser);
     }
