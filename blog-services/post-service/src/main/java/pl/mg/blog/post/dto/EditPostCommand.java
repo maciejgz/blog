@@ -2,6 +2,7 @@ package pl.mg.blog.post.dto;
 
 import lombok.Value;
 import pl.mg.blog.commons.Command;
+import pl.mg.blog.post.service.validator.PostContentConstraint;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,5 +16,7 @@ public class EditPostCommand implements Command {
 
     @NotEmpty String title;
 
-    @NotEmpty String content;
+    @NotEmpty
+    @PostContentConstraint
+    String content;
 }

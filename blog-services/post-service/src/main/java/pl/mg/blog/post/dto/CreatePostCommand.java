@@ -2,6 +2,7 @@ package pl.mg.blog.post.dto;
 
 import pl.mg.blog.commons.Command;
 import lombok.Value;
+import pl.mg.blog.post.service.validator.PostContentConstraint;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +13,8 @@ public class CreatePostCommand implements Command {
 
     @NotEmpty String title;
 
-    @NotEmpty String content;
+    @NotEmpty
+    @PostContentConstraint
+    String content;
 
 }
