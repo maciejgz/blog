@@ -20,6 +20,7 @@
     <modules>
         <module>logsmatcher</module>
         <module>blog</module>
+        <module>blog-services</module>
     </modules>
 
 </project>
