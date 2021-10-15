@@ -1,14 +1,16 @@
-package pl.mg.blog.post.controller;
+package pl.mg.blog.post.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import pl.mg.blog.commons.ApiErrorResponse;
 import pl.mg.blog.post.dto.*;
 import pl.mg.blog.post.service.PostCommandServiceImpl;
 import pl.mg.blog.post.service.PostQueryService;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -35,7 +37,8 @@ public class PostController {
     //create post
     @PostMapping(value = "")
 //    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PostQueryResult> createPost(@RequestBody @Valid CreatePostResponse dto) throws UserNotFoundException {
+    public ResponseEntity<PostQueryResult> createPost(@RequestBody @Valid CreatePostResponse dto)
+            throws UserNotFoundException, ConstraintViolationException {
         log.info("create post {}", dto);
         //TODO add object factory in the aggregate
         PostQueryResult post = postCommandServiceImpl.createPost(
@@ -49,7 +52,6 @@ public class PostController {
         log.info("get all posts...");
         return ResponseEntity.ok(postQueryService.getAll());
     }
-
 
     //edit post
     @PutMapping(value = "")
@@ -86,7 +88,6 @@ public class PostController {
             throw new PostNotFoundException(POST_NOT_FOUND_MESSAGE);
         }
     }
-
 
     //searchPosts
     @GetMapping(value = "/")
@@ -163,4 +164,5 @@ public class PostController {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(USER_NOT_FOUND_MESSAGE, details);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
+
 }

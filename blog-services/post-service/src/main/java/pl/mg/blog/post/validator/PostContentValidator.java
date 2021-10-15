@@ -1,4 +1,4 @@
-package pl.mg.blog.post.service.validator;
+package pl.mg.blog.post.validator;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -13,6 +13,7 @@ public class PostContentValidator implements ConstraintValidator<PostContentCons
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return !StringUtils.isEmpty(value);
+        //TODO mocked validation - shall me more complex
+        return !StringUtils.contains(value, "post");
     }
 }

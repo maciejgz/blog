@@ -37,3 +37,7 @@
 - start sonar container
 - Run maven command: `mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000` <br />
 `verify` step is needed to get sonar-project.properties file by maven plugin
+
+### Zipkin
+Zipkin gathers traces of communication between services (HTTP calls and events).<br />
+http://localhost:9411

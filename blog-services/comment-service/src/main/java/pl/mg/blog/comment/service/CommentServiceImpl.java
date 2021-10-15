@@ -115,7 +115,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     //TODO add cache @Cacheable(value = CacheConfig.COMMENT_CACHE, key = "#commentId")
     public CommentQueryResult getComment(String commentId) throws CommentNotExistException {
-        //TODO business validation
         Optional<Comment> comment = commentRepository.findById(commentId);
         if (comment.isPresent()) {
             return new CommentQueryResult(comment.get());
