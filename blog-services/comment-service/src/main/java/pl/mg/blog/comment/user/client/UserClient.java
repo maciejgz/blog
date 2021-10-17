@@ -1,5 +1,6 @@
 package pl.mg.blog.comment.user.client;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface UserClient {
 
     @RequestMapping(value = "/user/{username}", method = RequestMethod.HEAD)
+    @CircuitBreaker(name = "user-service-cb", fallbackMethod = "checkIfUserExistsFallback")
     ResponseEntity<Void> checkIfUserExists(@PathVariable("username") String username);
+
+    default ResponseEntity<Void> checkIfUserExistsFallback(String username, Throwable t) {
+        return ResponseEntity.ok().build();
+    }
 
 }

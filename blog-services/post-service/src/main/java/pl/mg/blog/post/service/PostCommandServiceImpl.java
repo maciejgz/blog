@@ -5,15 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import pl.mg.blog.post.dto.*;
+import pl.mg.blog.post.dto.CreatePostCommand;
+import pl.mg.blog.post.dto.EditPostCommand;
+import pl.mg.blog.post.dto.PostNotFoundException;
+import pl.mg.blog.post.dto.PostQueryResult;
+import pl.mg.blog.post.dto.UserNotFoundException;
 import pl.mg.blog.post.repository.Post;
 import pl.mg.blog.post.repository.PostRepository;
 import pl.mg.blog.post.user.client.UserClient;
 
-import javax.validation.Valid;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import javax.validation.Valid;
 
 @Service
 @Slf4j
@@ -32,7 +36,8 @@ public class PostCommandServiceImpl implements PostCommandService {
     public PostQueryResult createPost(@Valid CreatePostCommand command) throws UserNotFoundException {
         log.debug("createPost() called with: command = [" + command + "]");
         verifyIfUserExist(command.getUsername());
-        Post post = new Post(UUID.randomUUID().toString(), command.getUsername(), command.getTitle(), command.getContent(),
+        Post post = new Post(UUID.randomUUID().toString(), command.getUsername(), command.getTitle(),
+                command.getContent(),
                 Instant.now(), null, 0L, null);
         return PostQueryResult.ofPost(postRepository.add(post));
     }
@@ -60,4 +65,5 @@ public class PostCommandServiceImpl implements PostCommandService {
             throw new UserNotFoundException("User " + username + " not exists");
         }
     }
+
 }
