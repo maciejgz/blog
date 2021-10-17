@@ -1,4 +1,4 @@
-package pl.mg.blog.userservice.domain.repository;
+package pl.mg.blog.userservice.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.mg.blog.userservice.domain.UserDto;

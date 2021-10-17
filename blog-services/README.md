@@ -13,8 +13,7 @@
 - Sleuth - tracing system
 - Zipkin - to analyze traces
 - Feign - declarative HTTP client
-- Resilience4j - centralized circuit breaker placed in the Gateway App
-- Hystrix - Netflix implementation of circuit breaker
+- Resilience4j - centralized circuit breaker placed in the Gateway App. Currently, used on client side in feign client.
 
 ## Configuration
 ### Custom modules port mapping
