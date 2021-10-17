@@ -48,3 +48,8 @@ http://localhost:9411
 - Spring Cloud Consul - as an alternative to config and Eureka discovery
 - dockerization
 - kubernetes
+- Spring Cloud Commons
+- Spring Cloud Vault
+- Spring Cloud Stream
+- Spring Cloud Schema Registry
+- Spring Cloud Contract
