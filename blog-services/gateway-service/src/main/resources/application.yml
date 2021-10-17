@@ -44,6 +44,19 @@ management:
         include: "*"
 
 
+## circuit breaker
+resilience4j:
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 3
+        waitDuration: 100
+        maxAutoRetriesNextServer: 1
+    instances:
+      user-service:
+        baseConfig: default
+
+
 
 
 

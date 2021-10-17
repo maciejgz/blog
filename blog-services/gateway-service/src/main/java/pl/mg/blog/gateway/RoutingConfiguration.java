@@ -16,7 +16,8 @@ public class RoutingConfiguration {
         return builder.routes()
                 .route(p -> p
                         .path(API_VERSION_PREFIX + "get")
-                        .filters(f -> f.addRequestHeader("Hello", "World"))
+                        .filters(f -> f.addRequestHeader("Hello", "World")
+                        )
                         .uri("https://onet.pl"))
                 .route(p -> p
                         .path(API_VERSION_PREFIX + "user-service/**")

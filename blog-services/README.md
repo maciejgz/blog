@@ -2,7 +2,7 @@
 ### Services
 - configuration-service - Spring Cloud Config server
 - discovery-service - Spring Eureka server
-- gateway-service - Initially build with Spring Cloud Gateway (test Zuul Netflix as well)
+- gateway-service - Initially build with Spring Cloud Gateway (test Zuul Netflix as well). Should contain 
 - user-service - User management service
 - post-service - Post management service
 - comment-service - Comments of posts with likes
@@ -12,6 +12,9 @@
 - Spring Config
 - Sleuth - tracing system
 - Zipkin - to analyze traces
+- Feign - declarative HTTP client
+- Resilience4j - centralized circuit breaker placed in the Gateway App
+- Hystrix - Netflix implementation of circuit breaker
 
 ## Configuration
 ### Custom modules port mapping
