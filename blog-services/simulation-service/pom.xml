@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>simulation-service</name>
     <description>simulation-service</description>
+    <packaging>jar</packaging>
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
@@ -68,6 +69,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <finalName>simulation-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
