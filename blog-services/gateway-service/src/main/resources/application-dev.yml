@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: gateway-service
-  profiles:
-    active: dev
 
 
   ## config server
