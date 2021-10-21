@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk16
+FROM adoptopenjdk/openjdk15
 
 ARG JAR_FILE=target/comment-service.jar
 ADD ${JAR_FILE} app.jar
