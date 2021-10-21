@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+
+  ## config server
+  config:
+    import: optional:configserver:http://blog-configuration:8888
+
+  ## routes autoconfiguration
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      filter:
+        prefix-path:
+          enabled: true
+
+## discovery
+eureka:
+  client:
+    service-url:
+      defaultZone: http://blog-discovery:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+## actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+## circuit breaker
+resilience4j:
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 3
+        waitDuration: 100
+        maxAutoRetriesNextServer: 1
+    instances:
+      user-service:
+        baseConfig: default
+
+
+
+
+
+
+
+

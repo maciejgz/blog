@@ -33,6 +33,10 @@
 |Sonar|9100|
 |Zipkin server|9411|
 
+### Environments and profiles
+- dev - localhost dev platform without Docker
+- mock - local platform with Docker
+
 ### Run sonar analysis
 - start sonar container
 - Run maven command: `mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000` <br />
@@ -41,6 +45,17 @@
 ### Zipkin
 Zipkin gathers traces of communication between services (HTTP calls and events).<br />
 http://localhost:9411
+
+## Build and run
+### Build mvn project
+`mvn clean package`
+
+### build docker images
+Run script <br />
+`.\build_images.sh`
+
+### Docker compose
+`\docker\blog.yml`
 
 ## TODO
 - Spring Cloud Schema Registry
