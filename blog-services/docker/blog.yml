@@ -112,55 +112,84 @@ services:
       - "8761:8761"
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-configuration:
     container_name: blog-configuration
     image: blog-configuration-service:latest
     ports:
       - "8888:8888"
+    depends_on:
+      - blog-discovery
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-gateway:
     container_name: blog-gateway
     image: blog-gateway-service:latest
     ports:
       - "8080:8080"
+    depends_on:
+      - blog-discovery
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-user:
     container_name: blog-user
     image: blog-user-service:latest
     ports:
       - "8100:8100"
+    depends_on:
+      - blog-discovery
+      - blog-configuration
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-post:
     container_name: blog-post
     image: blog-post-service:latest
     ports:
       - "8200:8200"
+    depends_on:
+      - blog-discovery
+      - blog-configuration
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-comment:
     container_name: blog-comment
     image: blog-comment-service:latest
     ports:
       - "8300:8300"
+    depends_on:
+      - blog-discovery
+      - blog-configuration
     networks:
       - blog-network
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
   blog-simulation:
     container_name: blog-simulation
     image: blog-simulation-service:latest
     ports:
       - "8099:8099"
+    depends_on:
+      - blog-discovery
+      - blog-configuration
     networks:
       - blog-network
-
+    environment:
+      SPRING.PROFILES.ACTIVE: mock
 
 networks:
   blog-network:

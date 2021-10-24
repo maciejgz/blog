@@ -54,6 +54,9 @@ http://localhost:9411
 Run script <br />
 `.\build_images.sh`
 
+or use spring boot plugin (the latest image version is set by default): <br />
+`clean package spring-boot:build-image -DskipTests`
+
 ### Docker compose
 `\docker\blog.yml`
 
@@ -61,10 +64,8 @@ Run script <br />
 - Spring Cloud Schema Registry
 - Spring Cloud Contract
 - Spring Cloud Consul - as an alternative to config and Eureka discovery
-- dockerization
 - kubernetes
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream
 - Spring Cloud Schema Registry
-- Spring Cloud Contract

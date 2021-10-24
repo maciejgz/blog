@@ -59,6 +59,10 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.5.5</version>
                 <configuration>
+                    <image>
+                        <name>blog-${project.artifactId}:latest</name>
+                    </image>
+                    <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
