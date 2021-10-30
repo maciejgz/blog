@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin-service
+  labels:
+    app: zipkin-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin-service
+  template:
+    metadata:
+      labels:
+        app: zipkin-service
+    spec:
+      containers:
+        - name: zipkin-service
+          image: openzipkin/zipkin
+          readinessProbe:
+            httpGet:
+              port: 9411
+              path: health
+          livenessProbe:
+              httpGet:
+                port: 9411
+                path: /health
+          env:
+            # note: in-memory storage holds all data in memory, purging older data upon a span limit.
+            #       you should use a proper storage in production environments
+            - name: STORAGE_TYPE
+              value: mem
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: zipkin-service
+  name: zipkin-service
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - port: 9411
+      protocol: TCP
+      targetPort: 9411
+  selector:
+    app: zipkin-service
+  sessionAffinity: None
+  type: LoadBalancer

@@ -35,7 +35,8 @@
 
 ### Environments and profiles
 - dev - localhost dev platform without Docker
-- mock - local platform with Docker
+- mock - local platform with Docker compose
+- k8s - kubernetes environment
 
 ### Run sonar analysis
 - start sonar container
@@ -64,7 +65,7 @@ or use spring boot plugin (the latest image version is set by default): <br />
 - Spring Cloud Schema Registry
 - Spring Cloud Contract
 - Spring Cloud Consul - as an alternative to config and Eureka discovery
-- kubernetes
+- kubernetes - with its own service discovery and RefConfigMap
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream
