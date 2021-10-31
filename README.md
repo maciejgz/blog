@@ -1,1 +1,1 @@
-devskiller test projects
+blog-root
