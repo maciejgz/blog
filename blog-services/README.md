@@ -2,7 +2,7 @@
 ### Services
 - configuration-service - Spring Cloud Config server
 - discovery-service - Spring Eureka server
-- gateway-service - Initially build with Spring Cloud Gateway (test Zuul Netflix as well). Should contain 
+- gateway-service - Initially build with Spring Cloud Gateway (test Zuul Netflix as well)
 - user-service - User management service
 - post-service - Post management service
 - comment-service - Comments of posts with likes
@@ -40,7 +40,10 @@
 
 ### Run sonar analysis
 - start sonar container
-- Run maven command: `mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000` <br />
+- Run maven command:
+```
+mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000
+```
 `verify` step is needed to get sonar-project.properties file by maven plugin
 
 ### Zipkin
@@ -49,23 +52,41 @@ http://localhost:9411
 
 ## Build and run
 ### Build mvn project
-`mvn clean package`
+```
+mvn clean package
+```
 
 ### build docker images
 Run script <br />
-`.\build_images.sh`
+```
+.\build_images.sh
+```
 
 or use spring boot plugin (the latest image version is set by default): <br />
-`clean package spring-boot:build-image -DskipTests`
+```
+clean package spring-boot:build-image -DskipTests
+```
 
 ### Docker compose
-`\docker\blog.yml`
+```
+\docker\blog.yml
+```
+
+### Kubernetes environment
+Go to `/k8s/blog/` where build scripts are defined and run commands: <br />
+```
+kubectl apply -f zipkin-service.yaml
+kubectl apply -f user-service.yaml
+kubectl apply -f post-service.yaml
+kubectl apply -f gateway-service.yaml
+kubectl apply -f comment-service.yaml
+kubectl apply -f simulation-service.yaml
+```
 
 ## TODO
 - Spring Cloud Schema Registry
 - Spring Cloud Contract
 - Spring Cloud Consul - as an alternative to config and Eureka discovery
-- kubernetes - with its own service discovery and RefConfigMap
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream

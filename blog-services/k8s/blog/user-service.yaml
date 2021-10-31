@@ -4,14 +4,14 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
   labels:
-    app: blog-user-service
-  name: blog-user-service
+    app: user-service
+  name: user-service
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blog-user-service
+      app: user-service
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,12 +20,12 @@ spec:
   template:
     metadata:
       labels:
-        app: blog-user-service
+        app: user-service
     spec:
       containers:
         - image: blog-user-service:latest
           imagePullPolicy: IfNotPresent
-          name: blog-user-service
+          name: user-service
           readinessProbe:
             httpGet:
               port: 8100
@@ -36,15 +36,15 @@ spec:
               path: /actuator/health
           envFrom:
             - configMapRef:
-                name: blog-user-service
+                name: user-service
       restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: blog-user-service
-  name: blog-user-service
+    app: user-service
+  name: user-service
   namespace: default
 spec:
   ipFamilies:
@@ -55,7 +55,7 @@ spec:
       protocol: TCP
       targetPort: 8100
   selector:
-    app: blog-user-service
+    app: user-service
   sessionAffinity: None
   type: LoadBalancer
 ---
@@ -75,5 +75,5 @@ metadata:
       manager: kubectl.exe
       operation: Update
       time: 2021-10-27T17:22:56Z
-  name: blog-user-service
+  name: user-service
   namespace: default
