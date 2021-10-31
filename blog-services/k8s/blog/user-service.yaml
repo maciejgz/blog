@@ -26,14 +26,14 @@ spec:
         - image: blog-user-service:latest
           imagePullPolicy: IfNotPresent
           name: blog-user-service
-#          readinessProbe:
-#            httpGet:
-#              port: 8100
-#              path: /actuator/health/readiness
-#          livenessProbe:
-#            httpGet:
-#              port: 8100
-#              path: /actuator/health/liveness
+          readinessProbe:
+            httpGet:
+              port: 8100
+              path: /actuator/health
+          livenessProbe:
+            httpGet:
+              port: 8100
+              path: /actuator/health
           envFrom:
             - configMapRef:
                 name: blog-user-service
