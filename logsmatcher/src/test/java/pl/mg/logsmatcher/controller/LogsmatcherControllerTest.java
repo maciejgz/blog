@@ -10,6 +10,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.mg.logsmatcher.model.FindPatternDto;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -21,10 +24,12 @@ class LogsmatcherControllerTest {
 
     @Test
     public void shouldReturnCorrectResponse() throws Exception {
+        Path resourceDirectory = Paths.get("src","test","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         this.mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/")
-                                .content(asJsonString(new FindPatternDto("C:\\workspace\\git\\devskiller\\logsmatcher\\src\\test\\resources\\resources.zip", "pattern")))
+                                .content(asJsonString(new FindPatternDto(absolutePath + "\\resources.zip", "pattern")))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk());
@@ -32,10 +37,12 @@ class LogsmatcherControllerTest {
 
     @Test
     public void emptyResultResponse() throws Exception {
+        Path resourceDirectory = Paths.get("src","test","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         this.mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/")
-                                .content(asJsonString(new FindPatternDto("C:\\workspace\\git\\devskiller\\logsmatcher\\src\\test\\resources\\empty.zip", "pattern")))
+                                .content(asJsonString(new FindPatternDto(absolutePath + "\\empty.zip", "pattern")))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest());
@@ -43,10 +50,12 @@ class LogsmatcherControllerTest {
 
     @Test
     public void invalidFileTypeResponse() throws Exception {
+        Path resourceDirectory = Paths.get("src","test","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         this.mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/")
-                                .content(asJsonString(new FindPatternDto("C:\\workspace\\git\\devskiller\\logsmatcher\\src\\test\\resources\\sample.txt", "pattern")))
+                                .content(asJsonString(new FindPatternDto(absolutePath + "\\sample.txt", "pattern")))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest());
@@ -54,10 +63,12 @@ class LogsmatcherControllerTest {
 
     @Test
     public void fileNotExistsResponse() throws Exception {
+        Path resourceDirectory = Paths.get("src","test","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
         this.mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/")
-                                .content(asJsonString(new FindPatternDto("C:\\workspace\\git\\devskiller\\logsmatcher\\src\\test\\resources\\not_exists.txt", "pattern")))
+                                .content(asJsonString(new FindPatternDto(absolutePath + "\\not_exists.txt", "pattern")))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound());
