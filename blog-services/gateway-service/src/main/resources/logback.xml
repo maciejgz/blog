@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_PATH" value="/drive/logs"/>
+    <property name="LOG_PATH" value="/blog/logs"/>
     <appender name="Console"
             class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -15,10 +15,7 @@
     <logger name="pl.mg" level="debug" additivity="false">
         <appender-ref ref="Console"/>
     </logger>
-    <logger name="org.springframework.transaction" level="debug" additivity="false">
-        <appender-ref ref="Console"/>
-    </logger>
-    <logger name="org.springframework" level="debug" additivity="false">
+    <logger name="org.springframework" level="info" additivity="false">
         <appender-ref ref="Console"/>
     </logger>
 </configuration>

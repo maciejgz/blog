@@ -39,7 +39,7 @@ class LogsmatcherServiceTest {
         assertThrows(NoSuchFileException.class, () -> {
             Path zipFilePath = Paths.get("/mockedPath/file.zip");
             ZipFile zipFile = new ZipFile(zipFilePath.toFile());
-            MatchingResult result = logsmatcherService.matchPatternInZipFile(zipFile, "pattern");
+            logsmatcherService.matchPatternInZipFile(zipFile, "pattern");
         });
     }
 

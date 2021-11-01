@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  labels:
+    app: user-service
+  name: user-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - image: blog-user-service:latest
+          imagePullPolicy: IfNotPresent
+          name: user-service
+          readinessProbe:
+            httpGet:
+              port: 8100
+              path: /actuator/health
+          livenessProbe:
+            httpGet:
+              port: 8100
+              path: /actuator/health
+          envFrom:
+            - configMapRef:
+                name: user-service
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-service
+  name: user-service
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - port: 8100
+      protocol: TCP
+      targetPort: 8100
+  selector:
+    app: user-service
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+data:
+  ZIPKIN_URL: http://zipkin-service:9411
+  SPRING_PROFILES_ACTIVE: k8s
+kind: ConfigMap
+metadata:
+  managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: { }
+          f:CURRENCY_EXCHANGE_URI: { }
+      manager: kubectl.exe
+      operation: Update
+      time: 2021-10-27T17:22:56Z
+  name: user-service
+  namespace: default
