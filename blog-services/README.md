@@ -66,6 +66,7 @@ or use spring boot plugin (the latest image version is set by default): <br />
 ```
 clean package spring-boot:build-image -DskipTests
 ```
+<b> WARNING: images built with spring boot have problems in kubernetes - memory issue</b>
 
 ### Docker compose
 ```
