@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -7,16 +7,19 @@ spring:
 
   ## zipkin
   zipkin:
-    base-url: http://blog-zipkin:9411
-
-  ## config server
-  config:
-    import: optional:configserver:http://blog-configuration:8888
+    base-url: ${ZIPKIN_URL}
 
   ## routes autoconfiguration
   cloud:
     config:
-      profile: mock
+      discovery:
+        enabled: false
+      profile: k8s
+      enabled: false
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: true
     gateway:
       discovery:
         locator:
@@ -29,18 +32,25 @@ spring:
 ## discovery
 eureka:
   client:
-    service-url:
-      defaultZone: http://blog-discovery:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
+    enabled: false
   instance:
     prefer-ip-address: true
 
 ## actuator
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
   endpoint:
     health:
+      probes:
+        enabled: true
       show-details: always
+      group:
+        liveness:
+          include: livenessstate,cacheCheck
   endpoints:
     web:
       exposure:
@@ -58,11 +68,3 @@ resilience4j:
     instances:
       user-service:
         baseConfig: default
-
-
-
-
-
-
-
-
