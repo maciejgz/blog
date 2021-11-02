@@ -17,6 +17,10 @@ spring:
   cloud:
     config:
       profile: dev
+    kubernetes:
+      discovery:
+        enabled: false
+      enabled: false
     gateway:
       discovery:
         locator:
