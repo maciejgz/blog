@@ -16,6 +16,9 @@
 - Resilience4j - centralized circuit breaker placed in the Gateway App. Currently, used on client side in feign client.
 
 ## Configuration
+### Requirements
+- App should be built and run in Java 11
+- Docker and Kubernetes
 ### Custom modules port mapping
 |Module|Ports|
 |------|-----|
@@ -86,8 +89,7 @@ kubectl apply -f simulation-service.yaml
 
 ## TODO
 - Spring Cloud Schema Registry
-- Spring Cloud Contract
-- Spring Cloud Consul - as an alternative to config and Eureka discovery
+- Spring Cloud Consul - as an alternative to config and Eureka or Kubernetes discovery
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream

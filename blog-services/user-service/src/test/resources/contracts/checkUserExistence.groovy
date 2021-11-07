@@ -4,16 +4,12 @@ import org.springframework.cloud.contract.spec.Contract
 import org.springframework.http.HttpStatus
 
 Contract.make {
-    description "getUser: Should return user1"
+    description "getUser: check user1 existence"
     request {
-        method("GET")
+        method("HEAD")
         url("/user/user1")
     }
     response {
         status HttpStatus.OK.value()
-        body(["username": "user1", "password": "pass1"])
-        headers {
-            contentType("application/json")
-        }
     }
 }
