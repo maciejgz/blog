@@ -7,11 +7,18 @@ spring:
 
   ## zipkin
   zipkin:
-    base-url: http://blog-zipkin:9411
+#    base-url: http://blog-zipkin:9411
+    sender:
+      type: kafka
+    kafka:
+      topic: zipkin
 
   ## config server
   config:
     import: optional:configserver:http://blog-configuration:8888
+
+  kafka:
+    bootstrap-servers: blog-kafka:9092
 
   ## routes autoconfiguration
   cloud:
