@@ -11,7 +11,8 @@
 - Eureka - service registration
 - Spring Config
 - Sleuth - tracing system
-- Zipkin - to analyze traces
+- Zipkin - to analyze traces (possibility to user Kafka as a source of traces)
+- Kafka with Zookeeper - message broker
 - Feign - declarative HTTP client
 - Resilience4j - centralized circuit breaker placed in the Gateway App. Currently, used on client side in feign client.
 
@@ -35,8 +36,9 @@
 |------|-----|
 |Sonar|9100|
 |Zipkin server|9411|
+|Kafka|29092|
 
-### Environments and profiles
+### Profiles
 - dev - localhost dev platform without Docker
 - mock - local platform with Docker compose
 - k8s - kubernetes environment
@@ -50,8 +52,14 @@ mvn verify sonar:sonar -Dsonar.host.url=http://localhost:9000
 `verify` step is needed to get sonar-project.properties file by maven plugin
 
 ### Zipkin
-Zipkin gathers traces of communication between services (HTTP calls and events).<br />
-http://localhost:9411
+Zipkin gathers traces of communication between services. <br />
+For K8S environment Zipkin uses HTTP communication: http://localhost:9411. <br />
+For dev and mock profiles, apps and Zipkin uses Kafka topic `zipkin` to gather traces.
+
+### Kafka
+Offset Explorer can be connected to the Kafka cluster run in docker compose with the following way: </br>
+![offset_explorer_config_1.png](docs/img/offset_explorer_config_1.png) <br />
+![offset_explorer_config_2.png](docs/img/offset_explorer_config_2.png)
 
 ## Build and run
 ### Build mvn project
@@ -71,7 +79,7 @@ clean package spring-boot:build-image -DskipTests
 ```
 <b> WARNING: images built with spring boot have problems in kubernetes - memory issue</b>
 
-### Docker compose
+### Docker compose environment
 ```
 \docker\blog.yml
 ```
@@ -89,8 +97,6 @@ kubectl apply -f simulation-service.yaml
 
 ## TODO
 - Spring Cloud Schema Registry
-- Spring Cloud Consul - as an alternative to config and Eureka or Kubernetes discovery
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream
-- Spring Cloud Schema Registry
