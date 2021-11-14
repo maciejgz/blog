@@ -1,26 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>pl.mg</groupId>
     <artifactId>blog-root</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
-    <name>blog-root</name>
-
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <sonar-maven-plugin.version>3.9.0.2155</sonar-maven-plugin.version>
+        <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
-
     <modules>
-        <module>logsmatcher</module>
-        <module>blog</module>
-        <module>blog-services</module>
+        <module>user-service</module>
+        <module>post-service</module>
+        <module>comment-service</module>
+        <module>configuration-service</module>
+        <module>discovery-service</module>
+        <module>simulation-service</module>
+        <module>gateway-service</module>
+        <!--<module>blog-monolith</module>-->
     </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.5.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>sonar-project.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
