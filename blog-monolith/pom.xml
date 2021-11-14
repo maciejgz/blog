@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
     <groupId>pl.mg</groupId>
-    <artifactId>blog</artifactId>
+    <artifactId>blog-monolith</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>blog</name>
-    <description>blog</description>
+    <name>blog-monolith</name>
+    <description>blog-monolith</description>
     <properties>
         <java.version>11</java.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
