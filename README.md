@@ -83,6 +83,13 @@ clean package spring-boot:build-image -DskipTests
 ```
 \docker\blog.yml
 ```
+Docker compose environment components:
+- business components: comment-service, post-service, user-service, simulation-service, gateway-service
+- configuration-service - Spring config server
+- discovery-service - Spring Eureka
+- infrastructure components:
+  - Kafka
+  - Zipkin
 
 ### Kubernetes environment
 Go to `/k8s/blog/` where build scripts are defined and run commands: <br />
@@ -94,6 +101,7 @@ kubectl apply -f gateway-service.yaml
 kubectl apply -f comment-service.yaml
 kubectl apply -f simulation-service.yaml
 ```
+Standard K8S service registry and config (ConfigMap and Secrets) are used.
 
 ## TODO
 - Spring Cloud Schema Registry
