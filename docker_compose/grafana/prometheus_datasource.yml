@@ -1,0 +1,19 @@
+apiVersion: 1
+eleteDatasources:
+  - name: blog-prometheus
+    orgId: 1
+
+datasources:
+  - name: blog-prometheus
+    type: prometheus
+    orgId: 1
+    access: proxy
+    uid: blog_prometheus_id
+    url: http://blog-prometheus:9090
+    isDefault: true
+    jsonData:
+      graphiteVersion: "1.1"
+      tlsAuth: false
+      tlsAuthWithCACert: false
+    version: 1
+    editable: true
