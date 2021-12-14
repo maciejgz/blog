@@ -9,7 +9,7 @@
 - post-service - Post management service
 - comment-service - Comments of posts with likes
 
-### Spring Cloud components
+### Spring Cloud and other cloud components
 
 - Eureka - service registration
 - Spring Config
@@ -17,7 +17,13 @@
 - Zipkin - to analyze traces (possibility to user Kafka as a source of traces)
 - Kafka with Zookeeper - message broker
 - Feign - declarative HTTP client
-- Resilience4j - centralized circuit breaker placed in the Gateway App. Currently, used on client side in feign client.
+- Resilience4j - centralized circuit breaker placed in the Gateway App. Currently, used on client side in feign client
+- Sonar - code analysis
+- Kafka - message broker, events channel
+- Micrometer - metrics exporter for Spring Boot
+- Prometheus - gathers app metrics taken from Spring Boot Actuator
+- Grafana - metrics dashboards
+- elasticsearch - model indexing and open text search
 
 ## Configuration
 
