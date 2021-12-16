@@ -149,9 +149,35 @@ kubectl apply -f simulation-service.yaml
 
 Standard K8S service registry and config (ConfigMap and Secrets) are used.
 
-## TODO
 
+
+## Business requirements - User stories
+### User
+- User registration: As a user, I want to be able to register.
+- Blacklisting: As a user, I want to be able to block user to not let him comment or like my posts and like my comments.
+- Remove from blacklist:  As a user, I want to be able to unblock previously blocked user.
+
+### Post
+- Search posts with open text: As a user, I want to be able to search posts with free text.
+- Add post
+- Edit post
+- Like post
+- Remove like from post
+
+### Comment actions
+- Comment post
+- Like comment
+- Dislike comment
+
+## Code organization
+### DDD
+DDD shall be used here based on that: https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7 and book.
+Use ports and adapters (application, core without frameworks, infrastructure as connectors)
+
+## TODO
+- jak zwracać asynchroniczną odpowiedź z sagi przez kontroler
 - Spring Cloud Schema Registry
 - Spring Cloud Commons
 - Spring Cloud Vault
 - Spring Cloud Stream
+
