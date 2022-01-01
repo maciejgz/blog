@@ -1,4 +1,5 @@
 ## Description
+POC app of the Spring Cloud microservices architecture written built with DDD and hexagonal architecture.
 
 ### Services
 
@@ -153,7 +154,7 @@ Standard K8S service registry and config (ConfigMap and Secrets) are used.
 
 ## Business requirements - User stories
 ### User
-- User registration: As a user, I want to be able to register.
+- User registration: As a user, I want to be able to register user.
 - Blacklisting: As a user, I want to be able to block user to not let him comment or like my posts and like my comments.
 - Remove from blacklist:  As a user, I want to be able to unblock previously blocked user.
 
@@ -172,7 +173,7 @@ Standard K8S service registry and config (ConfigMap and Secrets) are used.
 ## Code organization
 ### DDD
 DDD shall be used here based on that: https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7 and book.
-Use ports and adapters (application, core without frameworks, infrastructure as connectors)
+Use ports and adapters (application, core without frameworks, infrastructure as connectors and ports implementation)
 
 ## TODO
 - jak zwracać asynchroniczną odpowiedź z sagi przez kontroler
