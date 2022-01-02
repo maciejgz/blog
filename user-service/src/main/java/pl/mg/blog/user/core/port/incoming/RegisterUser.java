@@ -1,6 +1,7 @@
 package pl.mg.blog.user.core.port.incoming;
 
 
+import pl.mg.blog.user.core.model.User;
 import pl.mg.blog.user.core.model.command.RegisterUserCommand;
 import pl.mg.blog.user.core.model.exception.UserRegistrationException;
 
@@ -9,7 +10,7 @@ import pl.mg.blog.user.core.model.exception.UserRegistrationException;
  */
 public interface RegisterUser {
 
-    String registerUser(RegisterUserCommand command) throws UserRegistrationException;
+    User registerUser(RegisterUserCommand command) throws UserRegistrationException;
 
 
 }

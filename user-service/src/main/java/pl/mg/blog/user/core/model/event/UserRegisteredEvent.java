@@ -4,4 +4,8 @@ import lombok.Value;
 
 @Value
 public class UserRegisteredEvent {
+
+    String username;
+    String password;
+
 }

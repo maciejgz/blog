@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 public class User {
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private List<BlacklistedUser> blacklistedUsers;
 
     public User(String username, String password, List<BlacklistedUser> blacklist) {
@@ -23,7 +23,7 @@ public class User {
     }
 
     public void blacklistUser(String username) throws UserAlreadyBlacklistedException {
-        if (blacklistedUsers != null && blacklistedUsers.stream().anyMatch(user -> user.getUsername().equals(username))) {
+        if (isUserBlacklisted(username)) {
             throw new UserAlreadyBlacklistedException(username);
         }
         if (this.blacklistedUsers == null) {
@@ -33,9 +33,13 @@ public class User {
     }
 
     public void removeUserFromBlacklist(String username) throws UserNotBlacklistedException {
-        if (blacklistedUsers == null || blacklistedUsers.stream().noneMatch(user -> user.getUsername().equals(username))) {
+        if (!isUserBlacklisted(username)) {
             throw new UserNotBlacklistedException(username);
         }
         this.blacklistedUsers.remove(new BlacklistedUser(username));
+    }
+
+    public boolean isUserBlacklisted(String username) {
+        return blacklistedUsers != null && blacklistedUsers.stream().anyMatch(user -> user.getUsername().equals(username));
     }
 }
