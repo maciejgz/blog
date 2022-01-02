@@ -11,6 +11,7 @@ import pl.mg.blog.user.core.model.command.RemoveUserFromBlacklistCommand;
 import pl.mg.blog.user.core.model.exception.UserAlreadyBlacklistedException;
 import pl.mg.blog.user.core.model.exception.UserNotBlacklistedException;
 import pl.mg.blog.user.core.model.exception.UserNotFoundException;
+import pl.mg.blog.user.core.model.exception.UserRegistrationException;
 import pl.mg.blog.user.core.port.incoming.BlacklistUser;
 import pl.mg.blog.user.core.port.incoming.GetUser;
 import pl.mg.blog.user.core.port.incoming.RegisterUser;
@@ -54,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<User> registerUser(@RequestBody RegisterUserCommand command) {
+    public ResponseEntity<User> registerUser(@RequestBody RegisterUserCommand command) throws UserRegistrationException {
         log.debug("Register user {}", command);
         User user = registerUserAdapter.registerUser(command);
         return ResponseEntity.ok(user);

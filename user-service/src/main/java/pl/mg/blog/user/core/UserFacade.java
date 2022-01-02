@@ -4,7 +4,9 @@ import pl.mg.blog.user.core.model.User;
 import pl.mg.blog.user.core.model.command.BlacklistUserCommand;
 import pl.mg.blog.user.core.model.command.RegisterUserCommand;
 import pl.mg.blog.user.core.model.command.RemoveUserFromBlacklistCommand;
+import pl.mg.blog.user.core.model.event.UserBlacklistedEvent;
 import pl.mg.blog.user.core.model.event.UserRegisteredEvent;
+import pl.mg.blog.user.core.model.event.UserRemovedFromBlacklistEvent;
 import pl.mg.blog.user.core.model.exception.*;
 import pl.mg.blog.user.core.port.incoming.BlacklistUser;
 import pl.mg.blog.user.core.port.incoming.GetUser;
@@ -13,6 +15,7 @@ import pl.mg.blog.user.core.port.incoming.RemoveUserFromBlacklist;
 import pl.mg.blog.user.core.port.outgoing.UserDatabase;
 import pl.mg.blog.user.core.port.outgoing.UserEventPublisher;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -37,7 +40,7 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
         }
         User us = new User(command.getUsername(), command.getPassword(), new ArrayList<>());
         database.save(us);
-        //TODO events shall be generated in the aggregate object, rather than in domain service
+        //TODO events shall be rather generated in the aggregate than in the domain service
         eventPublisher.publishUserRegisteredEvent(new UserRegisteredEvent(command.getUsername(), command.getPassword()));
         return us;
     }
@@ -48,6 +51,7 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
         if (user.isPresent()) {
             user.get().blacklistUser(command.getBlacklistedUser());
             database.save(user.get());
+            eventPublisher.publishUserBlacklistedEvent(new UserBlacklistedEvent(command.getUser(), command.getBlacklistedUser(), Instant.now()));
         } else {
             throw new UserNotFoundException(command.getUser());
         }
@@ -59,6 +63,7 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
         if (user.isPresent()) {
             user.get().removeUserFromBlacklist(command.getBlacklistedUser());
             database.save(user.get());
+            eventPublisher.publishUserRemovedFromBlacklist(new UserRemovedFromBlacklistEvent(command.getUser(), command.getBlacklistedUser(), Instant.now()));
         } else {
             throw new UserNotFoundException(command.getUser());
         }
