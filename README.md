@@ -159,7 +159,7 @@ Standard K8S service registry and config (ConfigMap and Secrets) are used.
 - Remove from blacklist:  As a user, I want to be able to unblock previously blocked user.
 
 ### Post
-- Search posts with open text: As a user, I want to be able to search posts with free text.
+- Search posts with open text: As a user, I want to be able to search posts with free text, CQRS needed
 - Add post
 - Edit post
 - Like post
@@ -175,8 +175,27 @@ Standard K8S service registry and config (ConfigMap and Secrets) are used.
 DDD shall be used here based on that: https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7 and book.
 Use ports and adapters (application, core without frameworks, infrastructure as connectors and ports implementation)
 
+### Ports and adapters packages
+- `*.application` - input interfaces like: REST API controllers, event listeners, schedulers
+  - `.controller` - REST controllers
+  - `.scheduler` - schedulers
+  - `.listener` - external event listeners
+  - `.facade` - application services with transactions integrates all application components. They contain only flow of use cases and all the business logic is performed in domain services or in aggregates. 
+- `*.core` - core domain package, should contain only clean Java code without frameworks.
+  - `.model` - domain model: aggregates and value objects. Business logic in the scope of one aggregate should be in the aggregate.  
+    - `.command` - command objects used in incoming ports
+    - `.event` - domain events
+    - `.exception` - exceptions
+  - `.port.incoming` - interfaces describing ports incoming to the domain model. Ports are gathered in the Facade or domain service.
+  - `.port.outgoing` - interfaces describing outgoing ports used by domain service (facade)
+  - `.service` - domain specific services for business actions which do not fit in any aggregate
+- `*.infrastructure` - infrastructure is technology/framework related part of the app. Adapters (ports implementations) and beans config.
+  - `.adapter` - adapters - ports implementations
+  - `.config` - configuration of the adapter beans. All dependencies should be injected here to not infect domain part.
+
 ## TODO
 - jak zwracać asynchroniczną odpowiedź z sagi przez kontroler
+- Spring Reactor
 - Spring Cloud Schema Registry
 - Spring Cloud Commons
 - Spring Cloud Vault
