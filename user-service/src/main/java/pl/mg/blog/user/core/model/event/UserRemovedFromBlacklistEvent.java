@@ -1,13 +1,12 @@
 package pl.mg.blog.user.core.model.event;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-import java.time.Instant;
-
 @Value
-public class UserRemovedFromBlacklistEvent {
+@EqualsAndHashCode(callSuper = true)
+public class UserRemovedFromBlacklistEvent extends Event {
 
     String user;
     String userRemovedFromBlacklist;
-    Instant timestamp;
 }

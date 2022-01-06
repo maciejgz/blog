@@ -7,7 +7,7 @@ import pl.mg.blog.user.core.model.event.UserBlacklistedEvent;
 import pl.mg.blog.user.core.model.event.UserRegisteredEvent;
 import pl.mg.blog.user.core.model.event.UserRemovedFromBlacklistEvent;
 import pl.mg.blog.user.core.port.outgoing.UserEventPublisher;
-import pl.mg.blog.user.infrastructure.KafkaTopicConfig;
+import pl.mg.blog.user.infrastructure.config.KafkaTopicConfig;
 
 import java.util.UUID;
 

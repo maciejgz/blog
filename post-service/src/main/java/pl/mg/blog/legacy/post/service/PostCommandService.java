@@ -2,7 +2,6 @@ package pl.mg.blog.legacy.post.service;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import pl.mg.blog.legacy.post.dto.*;
-import pl.mg.blog.post.dto.*;
 
 import javax.validation.Valid;
 

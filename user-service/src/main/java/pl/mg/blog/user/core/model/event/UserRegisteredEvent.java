@@ -1,11 +1,13 @@
 package pl.mg.blog.user.core.model.event;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.io.Serializable;
 
 @Value
-public class UserRegisteredEvent implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class UserRegisteredEvent extends Event implements Serializable {
 
     String username;
     String password;

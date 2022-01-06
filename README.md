@@ -160,15 +160,15 @@ Standard K8S service registry and config (ConfigMap and Secrets) are used.
 
 ### Post
 - Search posts with open text: As a user, I want to be able to search posts with free text, CQRS needed
-- Add post
-- Edit post
-- Like post
-- Remove like from post
+- Add post - validate user in user-service, add post, send event
+- Edit post - validate user in user-service, check post, send event
+- Like post - validate user in user-service, validate blacklist, send event
+- Remove like from post - validate user in user-service, send event
 
 ### Comment actions
-- Comment post
-- Like comment
-- Dislike comment
+- Comment post - validate user in user-service, validate blacklist, validate post, send event
+- Like comment - validate user in user-service, validate blacklist, validate post, send event 
+- Dislike comment - validate user in user-service, validate blacklist, validate post, send event
 
 ## Code organization
 ### DDD

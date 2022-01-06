@@ -1,4 +1,4 @@
-package pl.mg.blog.legacy.post.api;
+package pl.mg.blog.post.application.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,6 @@ public class PostController {
 
     //create post
     @PostMapping(value = "")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> createPost(@RequestBody @Valid CreatePostResponse dto)
             throws UserNotFoundException, ConstraintViolationException {
         log.info("create post {}", dto);
@@ -65,7 +64,6 @@ public class PostController {
 
     //getForPostId
     @GetMapping(value = "/{postId}")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getPost(@PathVariable(name = "postId") @NotEmpty @Valid String postId)
             throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.findByID(postId);
@@ -90,7 +88,6 @@ public class PostController {
 
     //searchPosts
     @GetMapping(value = "/")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryPagedResult> search(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
@@ -106,7 +103,6 @@ public class PostController {
 
     //get author suggestions
     @GetMapping(value = "/author/suggestions")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Set<String>> authorSuggestions(
             @RequestParam(name = "q", required = false) String q
     ) {
@@ -116,7 +112,6 @@ public class PostController {
 
     //getRandomPost
     @GetMapping(value = "/random")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getRandomPost() throws PostNotFoundException {
         Optional<PostQueryResult> post = postQueryService.getRandomPost();
         if (post.isPresent()) {
@@ -128,7 +123,6 @@ public class PostController {
 
     //getPostsForUserId
     @GetMapping(value = "/user/{userId}")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<PostQueryResult>> getUserPosts(
             @PathVariable(name = "userId") @Valid @NotEmpty String userId) {
         return ResponseEntity.ok(postQueryService.findByUsername(userId));
@@ -136,7 +130,6 @@ public class PostController {
 
     //getForCommentId
     @GetMapping(value = "/comment/{commentId}")
-//    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostQueryResult> getPostByCommentId(
             @PathVariable(name = "commentId") @Valid @NotEmpty String commentId)
             throws PostNotFoundException {

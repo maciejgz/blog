@@ -15,7 +15,6 @@ import pl.mg.blog.user.core.port.incoming.RemoveUserFromBlacklist;
 import pl.mg.blog.user.core.port.outgoing.UserDatabase;
 import pl.mg.blog.user.core.port.outgoing.UserEventPublisher;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -52,7 +51,7 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
         if (user.isPresent()) {
             user.get().blacklistUser(command.getBlacklistedUser());
             database.save(user.get());
-            eventPublisher.publishUserBlacklistedEvent(new UserBlacklistedEvent(command.getUser(), command.getBlacklistedUser(), Instant.now()));
+            eventPublisher.publishUserBlacklistedEvent(new UserBlacklistedEvent(command.getUser(), command.getBlacklistedUser()));
         } else {
             throw new UserNotFoundException(command.getUser());
         }
@@ -64,7 +63,7 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
         if (user.isPresent()) {
             user.get().removeUserFromBlacklist(command.getBlacklistedUser());
             database.save(user.get());
-            eventPublisher.publishUserRemovedFromBlacklist(new UserRemovedFromBlacklistEvent(command.getUser(), command.getBlacklistedUser(), Instant.now()));
+            eventPublisher.publishUserRemovedFromBlacklist(new UserRemovedFromBlacklistEvent(command.getUser(), command.getBlacklistedUser()));
         } else {
             throw new UserNotFoundException(command.getUser());
         }
