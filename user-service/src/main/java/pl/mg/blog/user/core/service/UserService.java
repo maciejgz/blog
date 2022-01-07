@@ -1,4 +1,4 @@
-package pl.mg.blog.user.application.facade;
+package pl.mg.blog.user.core.service;
 
 import pl.mg.blog.user.core.model.User;
 import pl.mg.blog.user.core.model.command.BlacklistUserCommand;
@@ -18,17 +18,12 @@ import pl.mg.blog.user.core.port.outgoing.UserEventPublisher;
 import java.util.ArrayList;
 import java.util.Optional;
 
-/**
- * User application service (facade) gathering all command handlers. it should not have specific technologies - they should be in
- * the infrastructure part.
- */
-//TODO transactions should be here in the application service
-public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBlacklist, GetUser {
+public class UserService implements BlacklistUser, RegisterUser, RemoveUserFromBlacklist, GetUser {
 
     private final UserDatabase database;
     private final UserEventPublisher eventPublisher;
 
-    public UserFacade(UserDatabase database, UserEventPublisher eventPublisher) {
+    public UserService(UserDatabase database, UserEventPublisher eventPublisher) {
         this.database = database;
         this.eventPublisher = eventPublisher;
     }
@@ -73,4 +68,5 @@ public class UserFacade implements BlacklistUser, RegisterUser, RemoveUserFromBl
     public User getUser(String username) throws UserNotFoundException {
         return database.getUser(username).orElseThrow(() -> new UserNotFoundException(username));
     }
+
 }

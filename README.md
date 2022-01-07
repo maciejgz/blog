@@ -180,15 +180,16 @@ Use ports and adapters (application, core without frameworks, infrastructure as 
   - `.controller` - REST controllers
   - `.scheduler` - schedulers
   - `.listener` - external event listeners
-  - `.facade` - application services with transactions integrates all application components. They contain only flow of use cases and all the business logic is performed in domain services or in aggregates. 
-- `*.core` - core domain package, should contain only clean Java code without frameworks.
+  - `.service` - application services/facades with transactions integrates all application components. They contain only flow of use cases and all the business logic is performed in domain port 
+- `*.core` - core domain package, should contain only clean Java code without frameworks and operates on domain objects (ports, commands) without implementation.
   - `.model` - domain model: aggregates and value objects. Business logic in the scope of one aggregate should be in the aggregate.  
     - `.command` - command objects used in incoming ports
     - `.event` - domain events
     - `.exception` - exceptions
   - `.port.incoming` - interfaces describing ports incoming to the domain model. Ports are gathered in the Facade or domain service.
   - `.port.outgoing` - interfaces describing outgoing ports used by domain service (facade)
-  - `.service` - domain specific services for business actions which do not fit in any aggregate
+  - `.service` - it contains two types of services:
+    - domain services - for business actions which do not fit in any aggregate
 - `*.infrastructure` - infrastructure is technology/framework related part of the app. Adapters (ports implementations) and beans config.
   - `.adapter` - adapters - ports implementations
   - `.config` - configuration of the adapter beans. All dependencies should be injected here to not infect domain part.
