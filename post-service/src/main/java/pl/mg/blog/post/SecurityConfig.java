@@ -1,4 +1,4 @@
-package pl.mg.blog.legacy.post;
+package pl.mg.blog.post;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

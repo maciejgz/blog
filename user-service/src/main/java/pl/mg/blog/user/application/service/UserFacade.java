@@ -31,18 +31,23 @@ public class UserFacade {
     }
 
     public User registerUser(RegisterUserCommand command) throws UserRegistrationException {
+
+        //TODO argument should be controller DTO instead of domain object
         return registerUserAdapter.registerUser(command);
     }
 
     public void blacklistUser(BlacklistUserCommand command) throws BlacklistUserException, UserAlreadyBlacklistedException, UserNotFoundException {
+        //TODO argument should be controller DTO instead of domain object
         this.blacklistUserAdapter.blacklistUser(command);
     }
 
     public void removeUserFromBlacklist(RemoveUserFromBlacklistCommand command) throws RemoveUserFromBlacklistException, UserNotBlacklistedException, UserNotFoundException {
+        //TODO argument should be controller DTO instead of domain object
         this.removeUserFromBlacklistAdapter.removeUserFromBlacklist(command);
     }
 
     public User getUser(String username) throws UserNotFoundException {
+        //TODO argument should be controller DTO instead of domain object
         return this.getUserAdapter.getUser(username);
     }
 }

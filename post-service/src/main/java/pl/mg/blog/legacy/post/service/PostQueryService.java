@@ -1,7 +1,7 @@
 package pl.mg.blog.legacy.post.service;
 
 import org.springframework.cache.annotation.Cacheable;
-import pl.mg.blog.legacy.post.CacheConfig;
+import pl.mg.blog.post.CacheConfig;
 import pl.mg.blog.legacy.post.dto.PostQueryPagedResult;
 import pl.mg.blog.legacy.post.dto.PostQueryResult;
 import pl.mg.blog.legacy.post.dto.SearchPostCommand;

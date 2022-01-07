@@ -1,4 +1,4 @@
-package pl.mg.blog.legacy.post;
+package pl.mg.blog.post;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;

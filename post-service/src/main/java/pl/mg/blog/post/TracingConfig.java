@@ -1,4 +1,4 @@
-package pl.mg.blog.legacy.post;
+package pl.mg.blog.post;
 
 import brave.sampler.Sampler;
 import org.springframework.context.annotation.Bean;
