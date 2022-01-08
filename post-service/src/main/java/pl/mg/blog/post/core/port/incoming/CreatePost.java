@@ -1,8 +1,11 @@
 package pl.mg.blog.post.core.port.incoming;
 
+import pl.mg.blog.post.core.model.aggregate.Post;
 import pl.mg.blog.post.core.model.command.CreatePostCommand;
+import pl.mg.blog.post.core.model.exception.UserNotFoundException;
 
 public interface CreatePost {
 
-    void createPost(CreatePostCommand command);
+    Post createPost(CreatePostCommand command) throws UserNotFoundException;
+
 }

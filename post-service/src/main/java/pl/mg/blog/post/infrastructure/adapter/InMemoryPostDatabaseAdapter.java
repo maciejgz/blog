@@ -1,6 +1,5 @@
 package pl.mg.blog.post.infrastructure.adapter;
 
-import org.springframework.stereotype.Repository;
 import pl.mg.blog.post.core.model.aggregate.Post;
 import pl.mg.blog.post.core.port.outgoing.PostDatabase;
 
@@ -8,15 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public class InMemoryPostDatabaseAdapter implements PostDatabase {
 
     private static final List<Post> POSTS = new ArrayList<>();
 
-
     @Override
     public Optional<Post> getPost(String id) {
-        return POSTS.stream().filter(post -> post.getId().equals(id)).findFirst();
+        return POSTS.stream().filter(post -> post.getId().toString().equals(id)).findFirst();
     }
 
     @Override

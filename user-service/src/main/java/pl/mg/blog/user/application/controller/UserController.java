@@ -12,6 +12,7 @@ import pl.mg.blog.user.core.model.exception.UserAlreadyBlacklistedException;
 import pl.mg.blog.user.core.model.exception.UserNotBlacklistedException;
 import pl.mg.blog.user.core.model.exception.UserNotFoundException;
 import pl.mg.blog.user.core.model.exception.UserRegistrationException;
+import pl.mg.blog.user.core.model.response.IsUserBlacklistedResponse;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -60,5 +61,13 @@ public class UserController {
         log.debug("RemoveUserFromBlacklist user {}", command);
         userFacade.removeUserFromBlacklist(command);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/blacklist/{username}/{blacklistedUsername}")
+    public ResponseEntity<IsUserBlacklistedResponse> checkIfUserBlacklisted(@PathVariable("username") String username,
+                                                                            @PathVariable("blacklistedUsername") String blacklistedUsername) throws UserNotFoundException, UserAlreadyBlacklistedException {
+        log.debug("CheckIfUserBlacklisted. User {}, blacklisted user {}", username, blacklistedUsername);
+        IsUserBlacklistedResponse isUserBlacklistedResponse = userFacade.checkIfUserIsBlacklisted(username, blacklistedUsername);
+        return ResponseEntity.ok(isUserBlacklistedResponse);
     }
 }

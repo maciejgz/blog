@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@RestController
-@RequestMapping(value = "/post")
+//@RestController
+//@RequestMapping(value = "/post")
 @Slf4j
 public class PostController {
 

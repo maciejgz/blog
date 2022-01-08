@@ -2,7 +2,7 @@ package pl.mg.blog.legacy.post.dto;
 
 import pl.mg.blog.commons.Command;
 import lombok.Value;
-import pl.mg.blog.legacy.post.validator.PostContentConstraint;
+import pl.mg.blog.post.application.validator.PostContentConstraint;
 
 import javax.validation.constraints.NotEmpty;
 

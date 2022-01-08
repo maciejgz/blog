@@ -2,23 +2,22 @@ package pl.mg.blog.user.core.service;
 
 import pl.mg.blog.user.core.model.User;
 import pl.mg.blog.user.core.model.command.BlacklistUserCommand;
+import pl.mg.blog.user.core.model.command.CheckIfUserIsBlacklistedCommand;
 import pl.mg.blog.user.core.model.command.RegisterUserCommand;
 import pl.mg.blog.user.core.model.command.RemoveUserFromBlacklistCommand;
 import pl.mg.blog.user.core.model.event.UserBlacklistedEvent;
 import pl.mg.blog.user.core.model.event.UserRegisteredEvent;
 import pl.mg.blog.user.core.model.event.UserRemovedFromBlacklistEvent;
 import pl.mg.blog.user.core.model.exception.*;
-import pl.mg.blog.user.core.port.incoming.BlacklistUser;
-import pl.mg.blog.user.core.port.incoming.GetUser;
-import pl.mg.blog.user.core.port.incoming.RegisterUser;
-import pl.mg.blog.user.core.port.incoming.RemoveUserFromBlacklist;
+import pl.mg.blog.user.core.model.response.IsUserBlacklistedResponse;
+import pl.mg.blog.user.core.port.incoming.*;
 import pl.mg.blog.user.core.port.outgoing.UserDatabase;
 import pl.mg.blog.user.core.port.outgoing.UserEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class UserService implements BlacklistUser, RegisterUser, RemoveUserFromBlacklist, GetUser {
+public class UserService implements BlacklistUser, RegisterUser, RemoveUserFromBlacklist, GetUser, CheckIfUserIsBlacklisted {
 
     private final UserDatabase database;
     private final UserEventPublisher eventPublisher;
@@ -69,4 +68,17 @@ public class UserService implements BlacklistUser, RegisterUser, RemoveUserFromB
         return database.getUser(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
+    @Override
+    public IsUserBlacklistedResponse checkIfUserIsBlacklisted(CheckIfUserIsBlacklistedCommand command) throws UserNotFoundException {
+        Optional<User> user = database.getUser(command.getUsername());
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found: " + command.getUsername());
+        }
+        Optional<User> blacklistedUser = database.getUser(command.getBlacklistedUser());
+        if (blacklistedUser.isEmpty()) {
+            throw new UserNotFoundException("User not found: " + command.getBlacklistedUser());
+        }
+        return new IsUserBlacklistedResponse(command.getUsername(), command.getBlacklistedUser(),
+                user.get().isUserBlacklisted(command.getBlacklistedUser()));
+    }
 }

@@ -1,4 +1,4 @@
-package pl.mg.blog.legacy.post.validator;
+package pl.mg.blog.post.application.validator;
 
 import org.apache.commons.lang.StringUtils;
 

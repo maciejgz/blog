@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.mg.blog.post.core.port.incoming.*;
 import pl.mg.blog.post.core.port.outgoing.PostDatabase;
 import pl.mg.blog.post.core.port.outgoing.PostEventPublisher;
+import pl.mg.blog.post.core.port.outgoing.UserServiceClient;
 import pl.mg.blog.post.core.service.PostDomainService;
 import pl.mg.blog.post.infrastructure.adapter.InMemoryPostDatabaseAdapter;
 import pl.mg.blog.post.infrastructure.adapter.PostEventKafkaPublisher;
@@ -15,31 +16,34 @@ import pl.mg.blog.post.infrastructure.adapter.PostEventKafkaPublisher;
 @Component
 public class ApplicationServiceConfig {
 
+    //incoming adapters
     @Bean
-    public CreatePost getCreatePost(PostDatabase database, PostEventPublisher postEventPublisher) {
-        return new PostDomainService(database, postEventPublisher);
+    public CreatePost createPost(PostDatabase database, PostEventPublisher postEventPublisher, UserServiceClient userServiceClient) {
+        return new PostDomainService(database, postEventPublisher, userServiceClient);
     }
 
     @Bean
-    public EditPost getEditPost(PostDatabase database, PostEventPublisher postEventPublisher) {
-        return new PostDomainService(database, postEventPublisher);
+    public EditPost editPost(PostDatabase database, PostEventPublisher postEventPublisher, UserServiceClient userServiceClient) {
+        return new PostDomainService(database, postEventPublisher, userServiceClient);
     }
 
     @Bean
-    public GetPost getGetPost(PostDatabase database, PostEventPublisher postEventPublisher) {
-        return new PostDomainService(database, postEventPublisher);
+    public GetPost getPost(PostDatabase database, PostEventPublisher postEventPublisher, UserServiceClient userServiceClient) {
+        return new PostDomainService(database, postEventPublisher, userServiceClient);
     }
 
     @Bean
-    public LikePost getLikePost(PostDatabase database, PostEventPublisher postEventPublisher) {
-        return new PostDomainService(database, postEventPublisher);
+    public LikePost likePost(PostDatabase database, PostEventPublisher postEventPublisher, UserServiceClient userServiceClient) {
+        return new PostDomainService(database, postEventPublisher, userServiceClient);
     }
 
     @Bean
-    public RemovePostLike getRemovePostLike(PostDatabase database, PostEventPublisher postEventPublisher) {
-        return new PostDomainService(database, postEventPublisher);
+    public RemovePostLike removePostLike(PostDatabase database, PostEventPublisher postEventPublisher, UserServiceClient userServiceClient) {
+        return new PostDomainService(database, postEventPublisher, userServiceClient);
     }
 
+
+    //outgoing adapters
     @Bean
     public PostDatabase getInMemoryPostDatabase() {
         return new InMemoryPostDatabaseAdapter();
