@@ -180,7 +180,8 @@ Use ports and adapters (application, core without frameworks, infrastructure as 
   - `.controller` - REST controllers
   - `.scheduler` - schedulers
   - `.listener` - external event listeners
-  - `.service` - application services/facades with transactions integrates all application components. They contain only flow of use cases and all the business logic is performed in domain port. Cache also should be here. 
+  - `.service` - application services/facades with transactions integrates all application components. They contain only flow of use cases and all the business logic is performed in domain port. 
+      Cache also should be here. Should use only incoming ports on a domian.
 - `*.core` - core domain package, should contain only clean Java code without frameworks and operates on domain objects (ports, commands) without implementation.
   - `.model` - domain model: aggregates and value objects. Business logic in the scope of one aggregate should be in the aggregate.  
     - `.command` - command objects used in incoming ports
