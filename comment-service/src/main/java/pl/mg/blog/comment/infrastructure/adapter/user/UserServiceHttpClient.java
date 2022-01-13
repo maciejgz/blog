@@ -1,4 +1,4 @@
-package pl.mg.blog.comment.infrastructure.adapter;
+package pl.mg.blog.comment.infrastructure.adapter.user;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.mg.blog.comment.core.model.command.CheckBlacklistResult;
 
 @Service
 @FeignClient(name = "user-service")
@@ -20,4 +21,10 @@ public interface UserServiceHttpClient {
         return ResponseEntity.ok().build();
     }
 
+    ResponseEntity<CheckBlacklistResult> checkIfUserIsBlacklisted(@PathVariable("username") String username,
+                                                                  @PathVariable("blacklistedUsername") String blacklistedUsername);
+
+    default ResponseEntity<CheckBlacklistResult> checkIfUserBlacklistedFallback(String username, String blacklistedUsername, Throwable t) {
+        return ResponseEntity.ok(new CheckBlacklistResult(username, blacklistedUsername, true));
+    }
 }
