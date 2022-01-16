@@ -49,7 +49,7 @@ public class Comment {
         if (!likes.contains(command.getUsername())) {
             throw new CommentAlreadyDislikedException("Comment " + commentId.toString() + " is already disliked by " + command.getUsername());
         }
-        likes.add(command.getUsername());
+        likes.remove(command.getUsername());
     }
 
 }
