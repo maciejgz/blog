@@ -13,8 +13,8 @@ import pl.mg.blog.comment.legacy.exception.CommentNotExistException;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
-@Slf4j
+/*@ControllerAdvice
+@Slf4j*/
 public class CommentApiExceptionHandler {
 
 

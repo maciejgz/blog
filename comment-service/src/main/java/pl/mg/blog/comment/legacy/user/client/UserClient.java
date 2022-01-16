@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@Service
-@FeignClient(name = "user-service")
+/*@Service
+@FeignClient(name = "user-service")*/
 public interface UserClient {
 
     @RequestMapping(value = "/user/{username}", method = RequestMethod.HEAD)

@@ -30,7 +30,7 @@ public interface UserClientAdapter extends UserServiceClient {
 
     @Override
     @GetMapping(value = "/user/blacklist/{username}/{blacklistedUsername}")
-    //@Retry(name = "user-service-retry", fallbackMethod = "checkIfUserExistsFallback")
+    //@Retry(name = "user-service-retry", fallbackMethod = "checkIfUserBlacklistedFallback")
     @CircuitBreaker(name = "user-service-cb", fallbackMethod = "checkIfUserBlacklistedFallback")
     ResponseEntity<IsUserBlacklistedResponse> checkIfUserIsBlacklisted(@PathVariable("username") String username,
                                                                        @PathVariable("blacklistedUsername") String blacklistedUsername);

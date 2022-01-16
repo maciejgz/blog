@@ -12,9 +12,7 @@ import pl.mg.blog.comment.application.service.CommentApplicationService;
 import pl.mg.blog.comment.core.model.command.AddCommentCommand;
 import pl.mg.blog.comment.core.model.command.DislikeCommentCommand;
 import pl.mg.blog.comment.core.model.command.LikeCommentCommand;
-import pl.mg.blog.comment.core.model.exception.CommentNotExistException;
-import pl.mg.blog.comment.core.model.exception.PostNotFoundException;
-import pl.mg.blog.comment.core.model.exception.UserNotFoundException;
+import pl.mg.blog.comment.core.model.exception.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -23,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Controller
+@RequestMapping(value = "/comment")
 @Slf4j
 public class CommentController {
 
@@ -35,24 +34,24 @@ public class CommentController {
     @PostMapping(value = "")
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryResult> addComment(@Valid @RequestBody AddCommentCommand command)
-            throws UserNotFoundException, PostNotFoundException {
+            throws UserNotFoundException, PostNotFoundException, UserBlacklistedException {
         CommentQueryResult commentQueryResult = commentApplicationService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
     }
 
 
-    @PutMapping(value = "/{commentId}/like")
+    @PutMapping(value = "/like")
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> likeComment(@Valid @RequestBody LikeCommentCommand command)
-            throws UserNotFoundException, PostNotFoundException {
+            throws UserNotFoundException, UserBlacklistedException, CommentAlreadyLikedException, CommentNotExistException {
         commentApplicationService.likeComment(command);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/{commentId}/dislike")
+    @PutMapping(value = "/dislike")
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> dislikeComment(@Valid @RequestBody DislikeCommentCommand command)
-            throws UserNotFoundException, PostNotFoundException {
+            throws UserNotFoundException, UserBlacklistedException, CommentNotExistException, CommentAlreadyDislikedException {
         commentApplicationService.dislikeComment(command);
         return ResponseEntity.ok().build();
     }

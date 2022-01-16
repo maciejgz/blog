@@ -18,8 +18,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
-@Slf4j
+/*@Service
+@Slf4j*/
 public class CommentServiceImpl implements CommentService {
 
     public static final String COMMENT_NOT_EXIST_LABEL = "Comment %s not exist";

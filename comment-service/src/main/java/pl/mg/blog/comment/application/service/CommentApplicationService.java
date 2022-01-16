@@ -3,10 +3,11 @@ package pl.mg.blog.comment.application.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.mg.blog.comment.application.model.CommentQueryResult;
+import pl.mg.blog.comment.core.model.Comment;
 import pl.mg.blog.comment.core.model.command.AddCommentCommand;
 import pl.mg.blog.comment.core.model.command.DislikeCommentCommand;
 import pl.mg.blog.comment.core.model.command.LikeCommentCommand;
-import pl.mg.blog.comment.core.model.exception.CommentNotExistException;
+import pl.mg.blog.comment.core.model.exception.*;
 import pl.mg.blog.comment.core.port.incoming.AddComment;
 import pl.mg.blog.comment.core.port.incoming.DislikeComment;
 import pl.mg.blog.comment.core.port.incoming.GetComment;
@@ -29,21 +30,20 @@ public class CommentApplicationService {
         this.dislikeComment = dislikeComment;
     }
 
-    public CommentQueryResult addComment(AddCommentCommand command) {
-        //TODO implement
-        return null;
+    public CommentQueryResult addComment(AddCommentCommand command) throws UserNotFoundException, PostNotFoundException, UserBlacklistedException {
+        Comment comment = addComment.addComment(command);
+        return CommentQueryResult.ofComment(comment);
     }
 
-    public void likeComment(LikeCommentCommand command) {
-        //TODO implement
+    public void likeComment(LikeCommentCommand command) throws UserNotFoundException, UserBlacklistedException, CommentAlreadyLikedException, CommentNotExistException {
+        likeComment.likeComment(command);
     }
 
-    public void dislikeComment(DislikeCommentCommand command) {
-        //TODO implement
+    public void dislikeComment(DislikeCommentCommand command) throws UserNotFoundException, UserBlacklistedException, CommentNotExistException, CommentAlreadyDislikedException {
+        dislikeComment.dislikeComment(command);
     }
 
     public CommentQueryResult getComment(String commentId) throws CommentNotExistException {
-        //TODO implement
-        return null;
+        return CommentQueryResult.ofComment(getComment.getComment(commentId));
     }
 }

@@ -19,10 +19,10 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+/*@RestController
 @RequestMapping(value = "/comment")
 @Slf4j
-@Validated
+@Validated*/
 public class CommentController {
 
     private final CommentService commentService;
