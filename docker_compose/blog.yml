@@ -140,6 +140,32 @@ services:
     networks:
       - blog-network
 
+  ## monitoring
+  blog-prometheus:
+    container_name: blog-prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - blog-network
+
+  blog-grafana:
+    container_name: blog-grafana
+    image: grafana/grafana
+    volumes:
+      ## initial grafana config with port rewritten to 9091
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      ## blog-prometheus datasource config
+      - ./grafana/prometheus_datasource.yml:/etc/grafana/provisioning/datasources/prometheus_datasource.yml
+    ports:
+      - "9091:9091"
+    depends_on:
+      - blog-prometheus
+    networks:
+      - blog-network
+
   ###### blog-services
   blog-discovery:
     container_name: blog-discovery
