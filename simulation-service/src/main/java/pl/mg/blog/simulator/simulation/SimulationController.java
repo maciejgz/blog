@@ -19,13 +19,13 @@ public class SimulationController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Boolean> startSimulation(@RequestBody StartSimulationCommand command) throws SimulationAlreadyStartedException {
+    public ResponseEntity<Boolean> stopSimulation(@RequestBody StartSimulationCommand command) throws SimulationAlreadyStartedException {
         simulationService.startSimulation(command);
         return ResponseEntity.ok(Boolean.TRUE);
     }
 
     @DeleteMapping(value = "")
-    public ResponseEntity<Boolean> startSimulation() throws SimulationAlreadyStoppedException {
+    public ResponseEntity<Boolean> stopSimulation() throws SimulationAlreadyStoppedException {
         simulationService.stopSimulation();
         return ResponseEntity.ok(Boolean.TRUE);
     }

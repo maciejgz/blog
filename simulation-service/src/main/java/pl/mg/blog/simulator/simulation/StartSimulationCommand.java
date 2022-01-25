@@ -5,8 +5,8 @@ import lombok.Value;
 @Value
 public class StartSimulationCommand {
 
-    private int numberOfUsers;
+    int numberOfUsers;
 
-    private int numberOfThreads;
+    int numberOfThreads;
 
 }
