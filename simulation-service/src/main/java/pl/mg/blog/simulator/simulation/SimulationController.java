@@ -19,7 +19,7 @@ public class SimulationController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Boolean> stopSimulation(@RequestBody StartSimulationCommand command) throws SimulationAlreadyStartedException {
+    public ResponseEntity<Boolean> startSimulation(@RequestBody StartSimulationCommand command) throws SimulationAlreadyStartedException {
         simulationService.startSimulation(command);
         return ResponseEntity.ok(Boolean.TRUE);
     }

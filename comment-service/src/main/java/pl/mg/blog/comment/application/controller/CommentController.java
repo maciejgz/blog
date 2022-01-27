@@ -4,7 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.mg.blog.comment.application.model.CommentQueryPageResult;
 import pl.mg.blog.comment.application.model.CommentQueryResult;
 import pl.mg.blog.comment.application.model.CommentSort;
@@ -12,13 +18,18 @@ import pl.mg.blog.comment.application.service.CommentApplicationService;
 import pl.mg.blog.comment.core.model.command.AddCommentCommand;
 import pl.mg.blog.comment.core.model.command.DislikeCommentCommand;
 import pl.mg.blog.comment.core.model.command.LikeCommentCommand;
-import pl.mg.blog.comment.core.model.exception.*;
+import pl.mg.blog.comment.core.model.exception.CommentAlreadyDislikedException;
+import pl.mg.blog.comment.core.model.exception.CommentAlreadyLikedException;
+import pl.mg.blog.comment.core.model.exception.CommentNotExistException;
+import pl.mg.blog.comment.core.model.exception.PostNotFoundException;
+import pl.mg.blog.comment.core.model.exception.UserBlacklistedException;
+import pl.mg.blog.comment.core.model.exception.UserNotFoundException;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/comment")
@@ -38,7 +49,6 @@ public class CommentController {
         CommentQueryResult commentQueryResult = commentApplicationService.addComment(command);
         return ResponseEntity.ok(commentQueryResult);
     }
-
 
     @PutMapping(value = "/like")
 //    @PreAuthorize("isAuthenticated()")
@@ -82,10 +92,11 @@ public class CommentController {
     @GetMapping(value = "/user/{username}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryPageResult> getUserComments(@PathVariable @Valid @NotEmpty String username,
-                                                                  @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
-                                                                  @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
-                                                                  @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
-                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
+            @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
+            @RequestParam(name = "sortBy", required = false,
+                          defaultValue = "created") @Valid @CommentSort String sortBy,
+            @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder
     ) throws UserNotFoundException {
         //TODO implement
         return null;
@@ -101,10 +112,11 @@ public class CommentController {
     @GetMapping(value = "/post/{postId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentQueryPageResult> getPostComments(@PathVariable @Valid @NotEmpty String postId,
-                                                                  @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
-                                                                  @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
-                                                                  @RequestParam(name = "sortBy", required = false, defaultValue = "created") @Valid @CommentSort String sortBy,
-                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) throws pl.mg.blog.comment.legacy.exception.PostNotFoundException {
+            @RequestParam(name = "page", required = false, defaultValue = "0") @Valid @Min(0) Integer page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") @Valid @Min(0) int pageSize,
+            @RequestParam(name = "sortBy", required = false,
+                          defaultValue = "created") @Valid @CommentSort String sortBy,
+            @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder) {
         //TODO implement
         return null;
         /*  GetCommentsByPostIdCommand command = new GetCommentsByPostIdCommand();

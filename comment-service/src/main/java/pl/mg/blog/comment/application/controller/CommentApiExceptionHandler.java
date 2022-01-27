@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import pl.mg.blog.comment.legacy.commons.ApiErrorResponse;
-import pl.mg.blog.comment.legacy.exception.CommentAlreadyDislikedException;
-import pl.mg.blog.comment.legacy.exception.CommentNotExistException;
+import pl.mg.blog.comment.application.model.ApiErrorResponse;
+import pl.mg.blog.comment.core.model.exception.CommentAlreadyDislikedException;
+import pl.mg.blog.comment.core.model.exception.CommentNotExistException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ import java.util.List;
 @ControllerAdvice
 @Slf4j
 public class CommentApiExceptionHandler {
-
 
     @ExceptionHandler(value = {CommentAlreadyDislikedException.class, CommentAlreadyDislikedException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -8,4 +8,6 @@ public interface PostDatabase {
     Optional<Post> getPost(String id);
 
     void save(Post newPost);
+
+    Optional<Post> getRandomPost();
 }

@@ -118,6 +118,14 @@ clean package spring-boot:build-image -DskipTests
 
 <b> WARNING: images built with spring boot have problems in kubernetes - memory issue</b>
 
+### Development environment - container-free
+
+Warning: to use spring-cloud-config server without git config source, it should be run with `native` profile 
+
+```
+docker-compose -up 
+```
+
 ### Docker compose environment
 
 ```
