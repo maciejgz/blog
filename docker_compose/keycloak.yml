@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  blog-maria-db:
+    image: mariadb:10.5.9
+    restart: 'always'
+    container_name: blog-maria-db
+    volumes:
+      - /volumes/blog/mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: qaz123
+      MYSQL_DATABASE: blog
+      MYSQL_USER: blog
+      MYSQL_PASSWORD: qaz123
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    networks:
+      - blog-network
+
+  blog-keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: blog_keycloak
+    environment:
+      DB_VENDOR: mariadb
+      DB_ADDR: blog-maria-db
+      DB_DATABASE: blog
+      DB_USER: blog
+      DB_PASSWORD: qaz123
+      KEYCLOAK_USER: root
+      KEYCLOAK_PASSWORD: qaz123
+      JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+    ports:
+      - "8080:8080"
+    depends_on:
+      - blog-maria-db
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
