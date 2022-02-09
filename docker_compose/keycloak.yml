@@ -13,6 +13,8 @@ services:
       MYSQL_USER: blog
       MYSQL_PASSWORD: qaz123
     command: mysqld --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
     ports:
       - "3306:3306"
     networks:
@@ -30,8 +32,10 @@ services:
       KEYCLOAK_USER: root
       KEYCLOAK_PASSWORD: qaz123
       JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+      ## works on port 8081
+    command: ["-Djboss.socket.binding.port-offset=1"]
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - blog-maria-db
     networks:
