@@ -6,7 +6,7 @@ services:
     restart: 'always'
     container_name: blog-maria-db
     volumes:
-      - /volumes/blog/mariadb:/var/lib/mysql
+      - /volumes/blog-volume/mariadb:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: qaz123
       MYSQL_DATABASE: blog
@@ -23,6 +23,8 @@ services:
   blog-keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: blog_keycloak
+    volumes:
+      - /volumes/blog/keycloak:/var/lib/keycloak/data
     environment:
       DB_VENDOR: mariadb
       DB_ADDR: blog-maria-db
